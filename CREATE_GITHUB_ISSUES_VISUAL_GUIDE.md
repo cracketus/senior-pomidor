@@ -18,7 +18,8 @@ python scripts\create_github_issues.py
 
 ### Result
 ✅ All 10 issues created automatically on GitHub
-✅ Correct titles, descriptions, labels, dependencies
+✅ Correct titles with `TOMATO-N:` prefix
+✅ Correct descriptions, labels, dependencies
 ✅ Ready for implementation
 
 ### Time: 30 seconds

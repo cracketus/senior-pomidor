@@ -137,8 +137,12 @@ def format_issue_body(details: dict) -> str:
     
     return '\n\n'.join(body_parts)
 
-def create_github_issue(title: str, body: str, dry_run: bool = False, labels: Optional[list] = None) -> bool:
+def create_github_issue(title: str, body: str, dry_run: bool = False, labels: Optional[list] = None, issue_number: Optional[str] = None) -> bool:
     """Create a GitHub issue using gh CLI."""
+    # Prepend TOMATO-N: prefix to title if not already present
+    if issue_number and not title.startswith(f"TOMATO-{issue_number}:"):
+        title = f"TOMATO-{issue_number}: {title}"
+    
     if dry_run:
         print(f"\n{Colors.CYAN}[DRY RUN] Would create issue:{Colors.END}")
         print(f"  {Colors.BOLD}Title:{Colors.END} {title}")
@@ -211,7 +215,7 @@ def main():
         
         print(f"[{idx}/{len(issues_data)}] Processing Issue {issue_num}...")
         
-        if create_github_issue(title, body, dry_run=dry_run, labels=None):
+        if create_github_issue(title, body, dry_run=dry_run, labels=None, issue_number=issue_num):
             successful += 1
         else:
             failed += 1

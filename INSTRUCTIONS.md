@@ -90,6 +90,57 @@ ruff check brain/ tests/ && ruff format brain/ tests/
 
 ---
 
+## 🌿 Branch and Commit Conventions
+
+All work must be tracked against GitHub issues using the `TOMATO-N` prefix system.
+
+### Branch Naming Convention
+
+Create branches using the issue prefix and a short description:
+
+```bash
+git checkout -b TOMATO-1/bootstrap-repository
+git checkout -b TOMATO-2/pydantic-contracts
+git checkout -b TOMATO-5/state-estimator-vpd
+```
+
+**Format**: `TOMATO-{number}/{short-description}`
+
+- Use lowercase
+- Use hyphens to separate words
+- Keep description short (3-5 words)
+- Do NOT use issue numbers in addition to the prefix
+
+### Commit Message Convention
+
+Every commit message must start with the issue prefix:
+
+```bash
+git commit -m "TOMATO-1: Bootstrap repository with pytest and ruff"
+git commit -m "TOMATO-2: Add StateV1 Pydantic contract with validation"
+git commit -m "TOMATO-5: Implement VPD calculation with reference cases"
+```
+
+**Format**: `TOMATO-{number}: {description}`
+
+- Capitalize first word after colon
+- Be concise but descriptive
+- Reference what was changed or added
+- Can include multiple commits per issue if logical units warrant it
+
+### Pull Request Naming Convention
+
+When creating a PR, use the issue prefix in the title:
+
+```bash
+gh pr create --title="TOMATO-1: Bootstrap production-ready repository skeleton" \
+  --body="Implements requirements from Issue TOMATO-1"
+```
+
+**Format**: `TOMATO-{number}: {Title with proper capitalization}`
+
+---
+
 ## ⚡ Running Simulations
 
 ### Understanding the Decision Cycle
@@ -240,25 +291,22 @@ When implementing a GitHub issue, follow this workflow:
 ### Step 1: View the issue details
 
 ```bash
-gh issue view <issue-number>
+gh issue view TOMATO-1
 ```
 
 ### Step 2: Create a feature branch
 
-Name the branch with the issue number and short description:
+Use the `TOMATO-N/description` naming convention (see conventions above):
 
 ```bash
-git checkout -b issue-<number>-<short-description>
-
-# Examples:
-git checkout -b issue-10-pydantic-contracts
-git checkout -b issue-11-observation-models
+git checkout -b TOMATO-1/bootstrap-repository
+git checkout -b TOMATO-2/pydantic-contracts
 ```
 
 ### Step 3: Implement the issue
 
 - Work in the feature branch
-- Commit frequently with clear messages
+- Commit frequently with clear messages following the `TOMATO-N:` convention
 - Run tests: `pytest`
 - Run linter: `ruff check . && ruff format .`
 
@@ -267,10 +315,8 @@ git checkout -b issue-11-observation-models
 Once the issue is complete and all tests pass:
 
 ```bash
-gh pr create --issue=<issue-number> --title="[Issue #<number>] Brief description" --body="Implements: Issue #<number>"
-
-# Example:
-gh pr create --issue=10 --title="[Issue #10] Implement Pydantic v2 contracts" --body="Implements: Issue #10"
+gh pr create --title="TOMATO-1: Bootstrap production-ready repository skeleton" \
+  --body="Implements requirements from TOMATO-1"
 ```
 
 Or let GitHub prompt you interactively:
@@ -296,7 +342,7 @@ git rebase -i HEAD~<number-of-commits>
 # Save and exit
 
 # Force push to update the PR
-git push --force-with-lease origin issue-<number>-<short-description>
+git push --force-with-lease origin TOMATO-1/bootstrap-repository
 ```
 
 **Verify** the PR now shows 1 commit in the GitHub UI.

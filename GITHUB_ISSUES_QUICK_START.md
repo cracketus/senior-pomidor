@@ -67,11 +67,11 @@ Reading issues from MVP_GITHUB_ISSUES_COMPLETE.md...
 Found 10 issues
 
 [1/10] Processing Issue 1...
-✓ Created: Bootstrap production-ready Python 3.11 repository skeleton for Embodied AI Tomato Brain
+✓ Created: TOMATO-1: Bootstrap production-ready Python 3.11 repository skeleton for Embodied AI Tomato Brain
   https://github.com/your-org/senior-pomidor/issues/1
 
 [2/10] Processing Issue 2...
-✓ Created: Define strict Pydantic v2 contracts for core messaging: state/action/anomaly/sensor health (v1 schemas)
+✓ Created: TOMATO-2: Define strict Pydantic v2 contracts for core messaging: state/action/anomaly/sensor health (v1 schemas)
   https://github.com/your-org/senior-pomidor/issues/2
 
 ... (8 more issues)
@@ -85,7 +85,8 @@ All issues created!
 
 ### ✅ Done!
 All 10 issues have been created with:
-- Correct titles and descriptions
+- Correct titles with `TOMATO-N:` prefix
+- Correct descriptions
 - Acceptance criteria and tests
 - Labels: `stage-1`, `issue-N`
 - Dependencies documented

@@ -72,22 +72,22 @@ This generates a `GITHUB_ISSUES_EXPORT.md` file that you can copy-paste into Git
 Running `create_github_issues.py` creates:
 
 ### Phase 1: Foundation (Weeks 1-2)
-- **Issue 1**: Repository Bootstrap
-- **Issue 2**: Core Pydantic Contracts (State, Action, Anomaly, SensorHealth)
-- **Issue 2a** ⭐ NEW: Observation & Device Status Contracts
-- **Issue 2b** ⭐ NEW: Confidence Scoring & Anomaly Thresholds Specs
+- **TOMATO-1**: Repository Bootstrap
+- **TOMATO-2**: Core Pydantic Contracts (State, Action, Anomaly, SensorHealth)
+- **TOMATO-2a** ⭐ NEW: Observation & Device Status Contracts
+- **TOMATO-2b** ⭐ NEW: Confidence Scoring & Anomaly Thresholds Specs
 
 ### Phase 2: Data Flow (Weeks 2-3)
-- **Issue 3**: JSONL Storage Layer
-- **Issue 4**: Synthetic and Replay Data Sources
+- **TOMATO-3**: JSONL Storage Layer
+- **TOMATO-4**: Synthetic and Replay Data Sources
 
 ### Phase 3: Core Logic (Weeks 3-4)
-- **Issue 5**: State Estimator Core (VPD, ring buffer, confidence, anomaly, health)
-- **Issue 6**: Virtual Clock and Scheduler
+- **TOMATO-5**: State Estimator Core (VPD, ring buffer, confidence, anomaly, health)
+- **TOMATO-6**: Virtual Clock and Scheduler
 
 ### Phase 4 & 5: Integration & QA
-- **Issue 7**: End-to-End Simulation Script
-- **Issue 8**: Integration Test (24h Deterministic Run)
+- **TOMATO-7**: End-to-End Simulation Script
+- **TOMATO-8**: Integration Test (24h Deterministic Run)
 
 ---
 
@@ -96,7 +96,8 @@ Running `create_github_issues.py` creates:
 After issues are created:
 
 - [ ] All 10 issues appear in your GitHub repository
-- [ ] Each issue has the correct title and description
+- [ ] Each issue has the correct title with `TOMATO-N:` prefix
+- [ ] Each issue has the correct description
 - [ ] Issues are labeled with `stage-1` and `issue-N`
 - [ ] Dependencies are documented in issue bodies
 - [ ] Issues reference each other (e.g., Issue 2 → Issue 3 dependency)

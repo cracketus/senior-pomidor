@@ -13,7 +13,7 @@
 
 ### I want to understand what's being created
 👉 **Read**: `GITHUB_ISSUES_SETUP_COMPLETE.md` (overview)  
-👉 **Read**: `MVP_GITHUB_ISSUES_COMPLETE.md` (full specs)  
+👉 **Read**: `MVP_GITHUB_ISSUES_COMPLETE.md` (full specs with TOMATO-N prefixes)  
 👉 **Check**: `STAGE1_GAP_FIXES_SUMMARY.md` (gap verification)
 
 ### I want to do manual creation (copy-paste)

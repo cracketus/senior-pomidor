@@ -31,15 +31,15 @@ class IssueExporter:
     
     def extract_issues(self, content: str) -> list[tuple[str, str]]:
         """Extract issue header and content pairs."""
-        # Pattern: # Issue N — Title
-        issue_pattern = r'^# Issue \d+[a-z]? — .+$'
+        # Pattern: # Issue N — Title (flexible whitespace, any separator)
+        issue_pattern = r'^#\s+Issue\s+(\d+[a-z]?)\s+.+$'
         
         issues = []
         current_header = None
         current_content = []
         
         for line in content.split('\n'):
-            if re.match(issue_pattern, line):
+            if re.match(issue_pattern, line, re.IGNORECASE):
                 # Save previous issue
                 if current_header:
                     issues.append((current_header, '\n'.join(current_content)))
@@ -78,23 +78,36 @@ class IssueExporter:
         
         for idx, (header, content) in enumerate(issues, 1):
             # Extract issue number and title
-            match = re.match(r'^# Issue (\d+[a-z]?) — (.+)$', header)
+            # Pattern: # Issue N [separator] Title
+            # We'll extract number first, then get everything after as title
+            match = re.match(r'^#\s+Issue\s+(\d+[a-z]?)(.*)', header, re.IGNORECASE)
             if not match:
                 continue
             
             issue_num = match.group(1)
-            title = match.group(2)
+            remainder = match.group(2).strip()
+            
+            # Remove leading non-alphabetic characters and separators
+            # Split on first word character and take everything after that
+            title_match = re.search(r'([A-Za-z0-9].*)', remainder)
+            if title_match:
+                title = title_match.group(1).strip()
+            else:
+                title = remainder.strip()
+            
+            # Prepend TOMATO-N: prefix to title
+            title_with_prefix = f"TOMATO-{issue_num}: {title}"
             
             # Parse content sections
             sections = self._parse_sections(content)
             
             # Generate issue block
-            lines.append(f"## Issue {issue_num}: {title}")
+            lines.append(f"## Issue {issue_num}: {title_with_prefix}")
             lines.append("")
             
             lines.append("### GitHub UI - Title Field")
             lines.append("```")
-            lines.append(title)
+            lines.append(title_with_prefix)
             lines.append("```")
             lines.append("")
             

@@ -71,22 +71,22 @@ Open `GITHUB_ISSUES_EXPORT.md` and copy-paste each issue into GitHub UI.
 ## 📋 The 10 Issues
 
 ### Phase 1: Foundation (Weeks 1-2) ← Priority
-1. **Issue 1** - Repository Bootstrap
-2. **Issue 2** - Core Pydantic Contracts (State, Action, Anomaly, SensorHealth)
-3. **Issue 2a** ⭐ NEW - Observation & Device Status Contracts
-4. **Issue 2b** ⭐ NEW - Confidence Scoring & Anomaly Thresholds Specs
+1. **TOMATO-1** - Repository Bootstrap
+2. **TOMATO-2** - Core Pydantic Contracts (State, Action, Anomaly, SensorHealth)
+3. **TOMATO-2a** ⭐ NEW - Observation & Device Status Contracts
+4. **TOMATO-2b** ⭐ NEW - Confidence Scoring & Anomaly Thresholds Specs
 
 ### Phase 2: Data Flow (Weeks 2-3)
-5. **Issue 3** - JSONL Storage Layer
-6. **Issue 4** - Synthetic and Replay Data Sources
+5. **TOMATO-3** - JSONL Storage Layer
+6. **TOMATO-4** - Synthetic and Replay Data Sources
 
 ### Phase 3: Core Logic (Weeks 3-4)
-7. **Issue 5** - State Estimator Core (VPD, ring buffer, confidence, anomaly, health)
-8. **Issue 6** - Virtual Clock and Scheduler
+7. **TOMATO-5** - State Estimator Core (VPD, ring buffer, confidence, anomaly, health)
+8. **TOMATO-6** - Virtual Clock and Scheduler
 
 ### Phase 4-5: Integration & QA (Weeks 5-6)
-9. **Issue 7** - End-to-End Simulation Script
-10. **Issue 8** - Integration Test (24h Deterministic Run - Quality Gate)
+9. **TOMATO-7** - End-to-End Simulation Script
+10. **TOMATO-8** - Integration Test (24h Deterministic Run - Quality Gate)
 
 ---
 
@@ -128,16 +128,16 @@ Dependencies:           Which issues must be done first
 
 ✅ **All gaps addressed**  
 Each of the 10 gaps from readiness assessment is fixed and integrated:
-- Gap #1 (Observation contract) → Issue 2a
-- Gap #2 (SensorHealthV1) → Issue 2 + 2b
-- Gap #3 (Anomaly thresholds) → Issue 2b + 5
-- Gap #4 (Confidence algorithm) → Issue 2b + 5
-- Gap #5 (Ring buffer API) → Issue 5
-- Gap #6 (Device status) → Issue 2a
-- Gap #7 (VPD algorithm + refs) → Issue 2b + 5
-- Gap #8 (Orchestrator) → Issue 7 + 5
-- Gap #9 (CLI arguments) → Issue 7
-- Gap #10 (Error handling) → Issue 2b + 3 + 4
+- Gap #1 (Observation contract) → TOMATO-2a
+- Gap #2 (SensorHealthV1) → TOMATO-2 + 2b
+- Gap #3 (Anomaly thresholds) → TOMATO-2b + 5
+- Gap #4 (Confidence algorithm) → TOMATO-2b + 5
+- Gap #5 (Ring buffer API) → TOMATO-5
+- Gap #6 (Device status) → TOMATO-2a
+- Gap #7 (VPD algorithm + refs) → TOMATO-2b + 5
+- Gap #8 (Orchestrator) → TOMATO-7 + 5
+- Gap #9 (CLI arguments) → TOMATO-7
+- Gap #10 (Error handling) → TOMATO-2b + 3 + 4
 
 ✅ **Specs locked in**  
 Algorithms, thresholds, and API signatures are detailed and reference-validated:
@@ -157,12 +157,12 @@ Issues organized into 5 phases for parallel work:
 
 ✅ **Dependencies documented**  
 Clear dependency graph to prevent wrong build order:
-- Issue 2 → Prerequisites for issues 3, 4, 5
-- Issue 2a → Required by Issue 4, 5
-- Issue 2b → Used by Issue 5
-- Issues 3, 4 → Required for Issue 7
-- Issues 3, 4, 5, 6 → Required for Issue 7
-- Issues 1-7 → Required for Issue 8 (QA gate)
+- TOMATO-2 → Prerequisites for issues 3, 4, 5
+- TOMATO-2a → Required by TOMATO-4, 5
+- TOMATO-2b → Used by TOMATO-5
+- TOMATO-3, 4 → Required for TOMATO-7
+- TOMATO-3, 4, 5, 6 → Required for TOMATO-7
+- TOMATO-1 through 7 → Required for TOMATO-8 (QA gate)
 
 ✅ **Ready to code**  
 Each issue has explicit required tests and acceptance criteria:
@@ -211,8 +211,8 @@ gh project create --title "Stage 1 - Core Foundation" --format table
 ```
 
 ### Step 4: Start Phase 1 (Week 1)
-- Assign Issue 1 (bootstrap)
-- Assign Issues 2, 2a, 2b (contracts & specs) in parallel
+- Assign TOMATO-1 (bootstrap)
+- Assign TOMATO-2, 2a, 2b (contracts & specs) in parallel
 - Create supporting docs:
   - `docs/vpd_algorithm.md`
   - `docs/anomaly_thresholds.md`
@@ -220,10 +220,10 @@ gh project create --title "Stage 1 - Core Foundation" --format table
 
 ### Step 5: Begin Implementation
 Once Phase 1 is done:
-- Issues 3, 4 → Data flow (storage, sources)
-- Issues 5, 6 → Core logic (estimator, clock)
-- Issue 7 → Integration (orchestrator)
-- Issue 8 → Quality gate (integration test, 90% coverage)
+- TOMATO-3, 4 → Data flow (storage, sources)
+- TOMATO-5, 6 → Core logic (estimator, clock)
+- TOMATO-7 → Integration (orchestrator)
+- TOMATO-8 → Quality gate (integration test, 90% coverage)
 
 ---
 
