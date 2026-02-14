@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "senior-pomidor"
+version = "0.1.0"
+description = "Embodied AI Tomato Brain: autonomous agent system for plant growth optimization"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "cracketus", email = "cracketus@example.com" }
+]
+keywords = ["ai", "agriculture", "autonomous-systems", "embodied-ai"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+]
+
+[tool.setuptools]
+packages = ["brain"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-v --cov=brain --cov-report=term-missing --cov-report=html"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["F401"]
+
+[tool.coverage.run]
+branch = true
+source = ["brain"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false

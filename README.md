@@ -14,6 +14,43 @@ No hype. No magic. Just clean engineering.
 
 ---
 
+# 🚀 Quick Start (< 10 minutes)
+
+## Prerequisites
+- Python 3.11 or later
+
+## Setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install package with dev dependencies
+pip install -e ".[dev]"
+```
+
+## Common Commands
+
+```bash
+# Run all tests
+pytest
+
+# Run tests with coverage report
+pytest --cov=brain --cov-report=html
+
+# Lint code
+ruff check .
+
+# Auto-fix lint issues
+ruff check . --fix
+
+# Simulate 24-hour day (accelerated time)
+python scripts/simulate_day.py
+```
+
+---
+
 # 🚀 Philosophy
 
 This is not a research notebook.
@@ -144,27 +181,25 @@ No premature abstraction.
 
 # 🛠 Requirements
 
-* Python 3.11+
+* **Python 3.11** (required)
 * pytest
-* ruff
-* pydantic
+* pytest-cov (coverage reporting)
+* ruff (linting)
+* pydantic (strict validation)
 
-Install:
+All dependencies are configured in `pyproject.toml`.
 
-```
-pip install -e .
-```
+Install development environment:
 
-Run tests:
-
-```
-pytest
+```bash
+pip install -e ".[dev]"
 ```
 
-Run 24h simulation (accelerated):
+Verify installation:
 
-```
-python scripts/simulate_day.py
+```bash
+pytest --version
+ruff --version
 ```
 
 ---
