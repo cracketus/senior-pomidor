@@ -233,6 +233,87 @@ senior-pomidor/
 
 ---
 
+## Issue Implementation Workflow
+
+When implementing a GitHub issue, follow this workflow:
+
+### Step 1: View the issue details
+
+```bash
+gh issue view <issue-number>
+```
+
+### Step 2: Create a feature branch
+
+Name the branch with the issue number and short description:
+
+```bash
+git checkout -b issue-<number>-<short-description>
+
+# Examples:
+git checkout -b issue-10-pydantic-contracts
+git checkout -b issue-11-observation-models
+```
+
+### Step 3: Implement the issue
+
+- Work in the feature branch
+- Commit frequently with clear messages
+- Run tests: `pytest`
+- Run linter: `ruff check . && ruff format .`
+
+### Step 4: Create a Pull Request
+
+Once the issue is complete and all tests pass:
+
+```bash
+gh pr create --issue=<issue-number> --title="[Issue #<number>] Brief description" --body="Implements: Issue #<number>"
+
+# Example:
+gh pr create --issue=10 --title="[Issue #10] Implement Pydantic v2 contracts" --body="Implements: Issue #10"
+```
+
+Or let GitHub prompt you interactively:
+
+```bash
+gh pr create
+```
+
+### Step 4.5: Squash all commits into one
+
+**Before merging, all commits in the PR must be squashed into a single commit.**
+
+This ensures a clean, linear history and one commit per issue.
+
+```bash
+# Count commits on current branch vs main
+git log main..HEAD --oneline
+
+# If more than 1 commit, squash them
+git rebase -i HEAD~<number-of-commits>
+
+# In the editor, keep the first commit as 'pick' and change the rest to 'squash' (or 's')
+# Save and exit
+
+# Force push to update the PR
+git push --force-with-lease origin issue-<number>-<short-description>
+```
+
+**Verify** the PR now shows 1 commit in the GitHub UI.
+
+### Step 5: Verify and merge
+
+- Ensure all CI checks pass
+- Verify PR shows **exactly 1 commit** before merging
+- Review the PR description
+- Merge via GitHub UI or CLI:
+
+```bash
+gh pr merge <pr-number> --merge
+```
+
+---
+
 ## 🛠 Common Development Tasks
 
 ### Adding a new contract
