@@ -1,0 +1,237 @@
+# 🍅 Tomato Brain (Embodied AI)
+
+An open, production-minded AI core for growing tomatoes in the real world.
+
+This project is about building an **embodied AI system** that can:
+
+* Read sensor data (real or synthetic)
+* Estimate plant state
+* Detect anomalies
+* Make decisions (water, light)
+* Run safely on a mini-PC next to a real plant
+
+No hype. No magic. Just clean engineering.
+
+---
+
+# 🚀 Philosophy
+
+This is not a research notebook.
+This is not a prototype that "might" go to prod.
+
+This code **is production code from day one**.
+
+Design principles:
+
+* Deterministic
+* Testable
+* Observable
+* Minimal dependencies
+* Transparent and open to the community
+* Hardware-independent core
+
+We start simple and evolve carefully.
+
+---
+
+# 🧠 What Exists in MVP
+
+The MVP focuses on the most independent and valuable core:
+
+## 1️⃣ Contracts (Source of Truth)
+
+Strict Pydantic models define:
+
+* `state_v1`
+* `action_v1`
+* `anomaly_v1`
+* `sensor_health_v1`
+
+Schemas are versioned.
+Everything written to disk must validate.
+
+---
+
+## 2️⃣ JSONL Storage (No Database Yet)
+
+All data is stored as JSONL files.
+
+Why?
+
+* Simple
+* Debuggable
+* Git-friendly
+* Works offline
+* Zero infra
+
+We will introduce a database only when:
+
+* Query complexity grows
+* We need indexing
+* Multiple services write concurrently
+* Data volume becomes painful
+
+Until then, files win.
+
+---
+
+## 3️⃣ Synthetic + Replay Data
+
+The system can run without hardware.
+
+Data sources:
+
+* Synthetic generator (noise + day cycle)
+* Replay from previous JSONL logs
+
+This means:
+
+* CI works
+* Development is fast
+* Bugs are reproducible
+
+---
+
+## 4️⃣ State Estimator
+
+Transforms raw observations into structured plant state.
+
+Includes:
+
+* VPD calculation
+* Ring buffer smoothing
+* Confidence score
+* Anomaly detection
+
+This is the heart of Tomato Brain.
+
+---
+
+## 5️⃣ Virtual Time
+
+We support time scaling.
+
+Example:
+
+```
+1 minute of real time = 2 hours of plant time
+```
+
+This allows us to simulate 24 hours in minutes.
+
+---
+
+# 📂 Project Structure (Simplified)
+
+```
+brain/
+  contracts/
+  storage/
+  simulator/
+  state_estimator/
+  scheduler/
+
+scripts/
+  simulate_day.py
+
+tests/
+```
+
+We keep it tight.
+No premature abstraction.
+
+---
+
+# 🛠 Requirements
+
+* Python 3.11+
+* pytest
+* ruff
+* pydantic
+
+Install:
+
+```
+pip install -e .
+```
+
+Run tests:
+
+```
+pytest
+```
+
+Run 24h simulation (accelerated):
+
+```
+python scripts/simulate_day.py
+```
+
+---
+
+# 🌍 Open & Transparent
+
+This project is designed to be:
+
+* Publicly shareable
+* Reproducible
+* Inspectable
+
+Runs generate datasets that can be exported to `data/public/`.
+
+The goal is not just to grow tomatoes.
+The goal is to build an open embodied AI system that the community can inspect and improve.
+
+---
+
+# 🧪 What This Is NOT
+
+* Not a web app (yet)
+* Not connected to hardware (yet)
+* Not an LLM decision system (yet)
+* Not over-engineered
+
+We build the foundation first.
+
+---
+
+# 🛣 Roadmap Direction
+
+Next layers (not in MVP):
+
+* Action executor (water + light control)
+* Hardware adapters
+* FastAPI interface
+* Long-term analytics
+* Optional SQLite layer
+* Eventually Rust performance modules
+
+But only when the core is stable.
+
+---
+
+# 🧑‍🌾 Why This Matters
+
+Embodied AI is different.
+
+If it fails:
+
+* Plants die
+* Hardware breaks
+* Water leaks
+
+So we build carefully.
+
+Small. Deterministic. Observable.
+
+---
+
+# 🍅 Senior Pomidor
+
+This repository is part of the larger vision:
+
+An open, real-world, embodied AI that grows tomatoes autonomously.
+
+We start with the brain.
+
+Everything else comes later.
