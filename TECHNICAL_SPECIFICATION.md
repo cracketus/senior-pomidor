@@ -128,6 +128,17 @@ Schema changes must preserve backward compatibility: new fields are optional; de
 }
 ```
 
+### Weather Integration Contracts (planned)
+
+The following contracts are required for forecast ingestion and Weather Adapter integration:
+
+- `forecast_36h_v1`: normalized external forecast (temperature, humidity, wind, cloud/solar) for the next 36 hours.
+- `targets_v1`: base targets + adapted targets with active scenario list and validity window.
+- `sampling_plan_v1`: base sampling cadence plus override windows.
+- `weather_adapter_log_v1`: explainable log record of applied scenario changes and guardrail clipping.
+
+These are planned and will be added alongside the World Model implementation.
+
 ---
 
 # 2. State Estimator
@@ -194,6 +205,46 @@ Base physical-empirical model (drying rate as function of VPD/light/ventilation)
 - 36-hour hourly forecast `{soil(P1,P2,avg), VPD, stress_risk}`
 - Uncertainty + explanation
 - Scheduling recommendations (risk windows for budget allocation)
+
+## Weather Forecast Integration (planned)
+
+Forecasts are sourced from GeoSphere Austria and normalized into `forecast_36h_v1`.
+Normalization requirements include:
+
+- hourly (or native) cadence with explicit `freq_minutes`
+- timestamps stored at minute precision in `Europe/Vienna` timezone
+- fields: `ext_temp_c`, `ext_rh_pct`, `ext_wind_mps`, and either `ext_cloud_cover_pct` or `ext_solar_wm2`
+- caching metadata for 24 hours, forecast TTL 120 minutes
+- rate limit compliance (5 req/s, 240 req/hour)
+
+## Weather Adapter (planned)
+
+WeatherAdapter lives under `brain/world_model/weather_adapter.py` as a policy layer on top of the forecast.
+Inputs: `forecast_36h_v1` + `StateV1` + context (growth stage, mode).
+Outputs:
+
+- `targets_v1` (base + adapted targets)
+- `sampling_plan_v1` (base cadence + overrides)
+- adapted budgets and explanations
+
+Scenarios (initial set):
+- dry inflow
+- heatwave
+- wind spike
+- cold spell
+
+## State Schema Reconciliation (planned)
+
+Weather Adapter expects nested state fields (env/soil/probes), while current `StateV1` is flat.
+Until contracts are aligned, apply a mapping:
+
+- `env.air_temp_c` ← `StateV1.air_temperature`
+- `env.rh_pct` ← `StateV1.air_humidity`
+- `env.vpd_kpa` ← `StateV1.vpd`
+- `soil.avg_moisture_pct` ← `StateV1.soil_moisture_avg` * 100
+- `soil.probes` ← `StateV1.soil_moisture_p1/p2` (as available)
+
+This mapping should be documented and replaced with a unified schema once the contracts are updated.
 
 ## Nightly Rebuild
 
@@ -360,4 +411,3 @@ World Model v1 (hybrid + backtesting), weather integration.
 
 **Stage 4**  
 LLM Agent (vision → JSON), integration with baseline, MVP.
-
