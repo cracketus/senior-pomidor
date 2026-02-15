@@ -1,6 +1,5 @@
 """Tests for specification documents and fixtures."""
 
-import os
 from pathlib import Path
 
 from tests.fixtures.anomaly_test_scenarios import (
@@ -9,7 +8,6 @@ from tests.fixtures.anomaly_test_scenarios import (
     get_scenarios_by_anomaly_type,
 )
 from tests.fixtures.vpd_reference_cases import (
-    VPD_REFERENCE_CASES,
     get_all_reference_cases,
     get_reference_case,
 )
@@ -17,6 +15,15 @@ from tests.fixtures.vpd_reference_cases import (
 
 class TestSpecificationDocuments:
     """Test that specification documents exist and are readable."""
+
+    _MOJIBAKE_PATTERNS = (
+        "ðŸ",
+        "â†’",
+        "ï¸",
+        "âƒ£",
+        "â€",
+        "Â°",
+    )
 
     def test_confidence_scoring_docs_exist_and_are_readable(self):
         """Confidence scoring documentation should exist and be non-empty."""
@@ -38,6 +45,61 @@ class TestSpecificationDocuments:
         assert "Severity" in content
         assert "Fault Detection" in content
 
+    def test_error_handling_doc_exists_and_is_readable(self):
+        """Error handling documentation should exist and be non-empty."""
+        doc_path = Path("docs/error_handling.md")
+        assert doc_path.exists(), "docs/error_handling.md not found"
+        content = doc_path.read_text(encoding="utf-8")
+        assert len(content) > 500, "error_handling.md too short"
+        assert "Policy Table" in content
+        assert "Simulation script" in content
+        lower = content.lower()
+        assert "fail-fast" in lower or "fail fast" in lower
+
+    def test_agents_status_consistency(self):
+        """AGENTS status blocks should match implemented Stage 1 components."""
+        content = Path("AGENTS.md").read_text(encoding="utf-8")
+
+        assert "State Estimator Agent" in content
+        assert "**Status**: Current (Stage 1)" in content
+        assert "Virtual Clock & Scheduler Agent" in content
+        assert "**Status**: Current (Stage 1)" in content
+        assert "Integration Orchestrator" in content
+        assert "**Status**: Current (Stage 1 foundation)" in content
+        assert "Last verified against repository state:" in content
+
+    def test_planned_features_status_consistency(self):
+        """Planned features should not list implemented Stage 1 agents as planned."""
+        content = Path("PLANNED_FEATURES.md").read_text(encoding="utf-8")
+
+        assert "## Planned Agents (Not Yet Implemented)" in content
+        planned_section = content.split("## Planned Agents (Not Yet Implemented)", 1)[1]
+        planned_section = planned_section.split("Implemented in Stage 1:", 1)[0]
+        assert "- State Estimator Agent" not in planned_section
+        assert "- Virtual Clock & Scheduler Agent" not in planned_section
+        assert "- Integration Orchestrator" not in planned_section
+        assert "Implemented in Stage 1:" in content
+        assert "- State Estimator Agent" in content
+
+    def test_docs_have_no_mojibake_patterns(self):
+        """Markdown and spec docs should be free of common mojibake artifacts."""
+        docs = [
+            Path("README.md"),
+            Path("AGENTS.md"),
+            Path("INSTRUCTIONS.md"),
+            Path("PLANNED_FEATURES.md"),
+            Path("TECHNICAL_SPECIFICATION.md"),
+            Path("docs/confidence_scoring.md"),
+            Path("docs/anomaly_thresholds.md"),
+            Path("docs/error_handling.md"),
+        ]
+
+        for path in docs:
+            content = path.read_text(encoding="utf-8")
+            assert not content.startswith("\ufeff"), f"{path}: contains UTF-8 BOM marker"
+            for pattern in self._MOJIBAKE_PATTERNS:
+                assert pattern not in content, f"{path}: found mojibake pattern {pattern!r}"
+
 
 class TestVPDReferenceCases:
     """Test VPD reference case fixture."""
@@ -48,13 +110,11 @@ class TestVPDReferenceCases:
         assert len(cases) >= 5, "Should have at least 5 reference cases"
 
         for case in cases:
-            # Validate structure
             assert case.case_id.startswith("vpd_")
             assert 0 <= case.air_temperature_celsius <= 40
             assert 0 <= case.relative_humidity_percent <= 100
             assert case.expected_vpd_kpa >= 0
             assert case.tolerance_kpa > 0
-            # Validate retrievability
             retrieved = get_reference_case(case.case_id)
             assert retrieved.case_id == case.case_id
 
@@ -74,16 +134,12 @@ class TestVPDReferenceCases:
         """VPD should reflect physical relationships."""
         cases = get_all_reference_cases()
 
-        # VPD increases with temperature (at constant RH)
-        warm_case = next(c for c in cases if c.case_id == "vpd_005")  # 35°C, 25%
-        cool_case = next(c for c in cases if c.case_id == "vpd_004")  # 5°C, 95%
+        warm_case = next(c for c in cases if c.case_id == "vpd_005")  # 35C, 25%
+        cool_case = next(c for c in cases if c.case_id == "vpd_004")  # 5C, 95%
         assert warm_case.expected_vpd_kpa > cool_case.expected_vpd_kpa
 
-        # VPD goes to zero at saturation (100% RH)
-        saturation = next(
-            c for c in cases if c.case_id == "vpd_007"
-        )  # 100% RH
-        assert saturation.expected_vpd_kpa < 0.01  # Should be near zero
+        saturation = next(c for c in cases if c.case_id == "vpd_007")  # 100% RH
+        assert saturation.expected_vpd_kpa < 0.01
 
 
 class TestAnomalyScenarios:
@@ -95,14 +151,12 @@ class TestAnomalyScenarios:
         assert len(scenarios) >= 10, "Should have at least 10 scenarios"
 
         for scenario in scenarios:
-            # Validate structure
             assert scenario.scenario_id.startswith("anom_")
             assert isinstance(scenario.expected_anomalies, list)
             assert 0 <= scenario.soil_moisture_p1 <= 1.0
             assert 0 <= scenario.air_temperature <= 40
             assert 0 <= scenario.air_humidity <= 100
             assert scenario.vpd >= 0
-            # Validate retrievability
             retrieved = get_scenario(scenario.scenario_id)
             assert retrieved.scenario_id == scenario.scenario_id
 

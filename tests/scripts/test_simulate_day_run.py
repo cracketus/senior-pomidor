@@ -1,5 +1,6 @@
-﻿"""Integration-style tests for simulate_day outputs."""
+"""Integration-style tests for simulate_day outputs."""
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -26,6 +27,10 @@ def _read_lines(path: Path) -> list[str]:
         return []
     text = path.read_text(encoding="utf-8").strip()
     return [] if not text else text.splitlines()
+
+
+def _load_jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in _read_lines(path)]
 
 
 def test_generates_state_and_anomaly_logs(tmp_path):
@@ -93,3 +98,23 @@ def test_fixed_seed_produces_reproducible_outputs(tmp_path):
     assert (run_a / "state.jsonl").read_text(encoding="utf-8") == (
         run_b / "state.jsonl"
     ).read_text(encoding="utf-8")
+
+
+def test_event_driven_mode_increases_sampling_frequency(tmp_path):
+    result = _run_simulate(
+        tmp_path,
+        ["--duration-hours", "8", "--seed", "123", "--time-scale", "1000000", "--scenario", "heatwave"],
+    )
+    assert result.returncode == 0
+
+    run_dir = _find_run_dir(tmp_path)
+    cadence_records = _load_jsonl(run_dir / "cadence.jsonl")
+
+    assert cadence_records, "cadence.jsonl should contain cycle metadata"
+    modes = {record["mode"] for record in cadence_records}
+    intervals = {record["interval_seconds"] for record in cadence_records}
+
+    assert "baseline" in modes
+    assert "event" in modes
+    assert 7200 in intervals
+    assert 900 in intervals

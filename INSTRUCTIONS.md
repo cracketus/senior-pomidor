@@ -1,4 +1,4 @@
-﻿# 📖 Development Instructions
+# 📖 Development Instructions
 
 A quick start and reference guide for developers working on Tomato Brain.
 
@@ -385,13 +385,19 @@ def calculate_vpd(temp_c: float, rh_percent: float) -> float:
 
 ### Testing
 
-- Aim for high coverage (70%+)
+- Coverage gate: keep total coverage at or above 80% (`--cov-fail-under=80`)
 - Test happy path, edge cases, and error conditions
 - Use descriptive assertion messages
 - Avoid test interdependencies
 
 ---
 
+### Coverage Escalation Process
+
+When a change cannot keep coverage >= 80%:
+1. Add targeted tests where feasible in the same PR.
+2. If still below threshold, do not merge silently: document the gap in the PR and open a follow-up TOMATO issue with an owner and due milestone.
+3. Raise the follow-up priority if production-critical modules are affected.
 ## 🔁 Workflow: Adding a Feature
 
 1. Create a branch: `git checkout -b TOMATO-19/short-description`
@@ -450,3 +456,4 @@ Checklist:
 ---
 
 Good luck! 🌱
+

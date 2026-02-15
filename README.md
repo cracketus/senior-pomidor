@@ -221,6 +221,14 @@ The goal is to build an open embodied AI system that the community can inspect a
 
 ---
 
+## Operational Documentation
+
+- `docs/confidence_scoring.md`
+- `docs/anomaly_thresholds.md`
+- `docs/error_handling.md`
+
+---
+
 # 🧪 What This Is NOT
 
 * Not a web app (yet)

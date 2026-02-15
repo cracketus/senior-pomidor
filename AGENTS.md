@@ -1,4 +1,4 @@
-﻿# 🤖 Agents & Components
+# 🤖 Agents & Components
 
 **Tomato Brain is not a monolithic application.**
 
@@ -9,6 +9,7 @@ It is a collection of autonomous, single-responsibility agents that cooperate to
 ## Agent Architecture
 
 Planned components and stages are summarized in `PLANNED_FEATURES.md`.
+Last verified against repository state: February 15, 2026.
 
 ### 1️⃣ Observation Source Agent
 
@@ -46,7 +47,7 @@ def next_observation() -> tuple[ObservationV1, DeviceStatusV1] | None
 
 ### 2️⃣ State Estimator Agent
 
-**Status**: Planned
+**Status**: Current (Stage 1)
 
 **Responsibility**: Transform raw observations into structured plant state, anomaly events, and sensor health. Fuses sensor data, detects failures, computes derived metrics (VPD, leaf-air delta), and evaluates confidence.
 
@@ -255,7 +256,7 @@ def next_observation() -> tuple[ObservationV1, DeviceStatusV1] | None
 
 ### 8️⃣ Virtual Clock & Scheduler Agent
 
-**Status**: Planned
+**Status**: Current (Stage 1)
 
 **Responsibility**: Drive simulation at configurable speeds and schedule periodic tasks.
 
@@ -279,7 +280,7 @@ def next_observation() -> tuple[ObservationV1, DeviceStatusV1] | None
 
 ### 9️⃣ Integration Orchestrator
 
-**Status**: Planned
+**Status**: Current (Stage 1 foundation)
 
 **Responsibility**: Wire all agents together and run end-to-end workflows.
 
@@ -295,7 +296,7 @@ State Estimator ──→ Storage Agent
         & Scheduler
 ```
 
-**Entry point**: `scripts/simulate_day.py` (planned; see issue TOMATO-16)
+**Entry point**: `scripts/simulate_day.py` (implemented in Stage 1 via TOMATO-16)
 
 ---
 

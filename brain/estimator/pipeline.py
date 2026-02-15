@@ -41,7 +41,7 @@ class EstimatorPipeline:
 
         sensor_health = evaluate_sensor_health(observation, history)
         anomalies = detect_anomalies(
-            observation, vpd_kpa, sensor_health, device_status
+            observation, vpd_kpa, sensor_health, device_status, history=history
         )
         confidence = compute_confidence(
             observation,

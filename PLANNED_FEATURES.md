@@ -1,4 +1,4 @@
-﻿# Planned Features and Stages
+# Planned Features and Stages
 
 This file captures planned components and staged work that are not yet implemented in code. Keep it aligned with open TOMATO issues.
 
@@ -32,13 +32,17 @@ This file captures planned components and staged work that are not yet implement
 
 ## Planned Agents (Not Yet Implemented)
 
-- State Estimator Agent
 - World Model Agent
 - Control Layer Agent
 - Guardrails Agent
 - LLM Agent (Vision Analyzer)
+
+Implemented in Stage 1:
+- Observation Source Agent
+- State Estimator Agent
+- Storage Agent
 - Virtual Clock & Scheduler Agent
-- Integration Orchestrator
+- Integration Orchestrator foundation (`scripts/simulate_day.py`)
 
 ---
 

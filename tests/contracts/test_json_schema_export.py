@@ -4,7 +4,13 @@ import json
 
 import pytest
 
-from brain.contracts import ActionV1, AnomalyV1, SensorHealthV1, StateV1
+from brain.contracts import (
+    ActionV1,
+    AnomalyV1,
+    GuardrailResultV1,
+    SensorHealthV1,
+    StateV1,
+)
 
 
 class TestJsonSchemaExport:
@@ -12,7 +18,7 @@ class TestJsonSchemaExport:
 
     def test_all_contracts_export_json_schema(self):
         """All contracts should export valid JSON Schema."""
-        contracts = [StateV1, ActionV1, AnomalyV1, SensorHealthV1]
+        contracts = [StateV1, ActionV1, AnomalyV1, SensorHealthV1, GuardrailResultV1]
 
         for contract in contracts:
             schema = contract.model_json_schema()
@@ -50,7 +56,7 @@ class TestJsonSchemaExport:
 
     def test_schemas_are_serializable(self):
         """All schemas should be JSON serializable."""
-        for contract in [StateV1, ActionV1, AnomalyV1, SensorHealthV1]:
+        for contract in [StateV1, ActionV1, AnomalyV1, SensorHealthV1, GuardrailResultV1]:
             schema = contract.model_json_schema()
             json_str = json.dumps(schema)
             assert isinstance(json_str, str)

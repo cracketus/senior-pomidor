@@ -94,3 +94,16 @@ def test_coverage_configuration_exists():
     coverage_config = tools.get("coverage", {})
     assert "run" in coverage_config, "coverage.run section missing"
     assert "report" in coverage_config, "coverage.report section missing"
+
+
+def test_pytest_has_cov_fail_under_policy():
+    """Test that pytest addopts includes a minimum coverage gate."""
+    pyproject_path = get_pyproject_path()
+
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+
+    pytest_opts = pyproject.get("tool", {}).get("pytest", {}).get("ini_options", {})
+    addopts = pytest_opts.get("addopts", "")
+
+    assert "--cov-fail-under=" in addopts, "coverage threshold gate missing from pytest addopts"

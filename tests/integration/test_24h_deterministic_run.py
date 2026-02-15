@@ -1,4 +1,4 @@
-﻿"""Integration test for 24h deterministic simulation run."""
+"""Integration test for 24h deterministic simulation run."""
 
 import json
 import subprocess
@@ -8,20 +8,25 @@ from pathlib import Path
 from brain.contracts import AnomalyV1, DeviceStatusV1, ObservationV1, SensorHealthV1, StateV1
 
 
-def _run_simulate(output_dir: Path, seed: int) -> subprocess.CompletedProcess:
+def _run_simulate(
+    output_dir: Path,
+    seed: int,
+    scenario: str = "none",
+    duration_hours: int = 24,
+) -> subprocess.CompletedProcess:
     args = [
         sys.executable,
         "scripts/simulate_day.py",
         "--output-dir",
         str(output_dir),
         "--duration-hours",
-        "24",
+        str(duration_hours),
         "--seed",
         str(seed),
         "--time-scale",
         "1000000",
         "--scenario",
-        "none",
+        scenario,
     ]
     return subprocess.run(args, cwd=Path.cwd(), capture_output=True, text=True)
 
@@ -107,7 +112,53 @@ def test_24h_run_jsonl_files_are_readable(tmp_path):
         "anomalies.jsonl",
         "sensor_health.jsonl",
         "observations.jsonl",
+        "cadence.jsonl",
     ]:
         path = run_dir / name
         for line in _read_lines(path):
             json.loads(line)
+
+
+def test_24h_run_all_artifacts_are_deterministic(tmp_path):
+    out_a = tmp_path / "a_all"
+    out_b = tmp_path / "b_all"
+
+    result_a = _run_simulate(out_a, seed=31415)
+    result_b = _run_simulate(out_b, seed=31415)
+
+    assert result_a.returncode == 0, result_a.stderr
+    assert result_b.returncode == 0, result_b.stderr
+
+    run_a = _find_run_dir(out_a)
+    run_b = _find_run_dir(out_b)
+
+    for artifact in [
+        "state.jsonl",
+        "anomalies.jsonl",
+        "sensor_health.jsonl",
+        "observations.jsonl",
+    ]:
+        left = (run_a / artifact).read_text(encoding="utf-8")
+        right = (run_b / artifact).read_text(encoding="utf-8")
+        assert left == right, f"Mismatch in deterministic artifact: {artifact}"
+
+
+def test_event_driven_window_is_deterministic(tmp_path):
+    out_a = tmp_path / "event_a"
+    out_b = tmp_path / "event_b"
+
+    result_a = _run_simulate(out_a, seed=2026, scenario="heatwave", duration_hours=8)
+    result_b = _run_simulate(out_b, seed=2026, scenario="heatwave", duration_hours=8)
+
+    assert result_a.returncode == 0, result_a.stderr
+    assert result_b.returncode == 0, result_b.stderr
+
+    run_a = _find_run_dir(out_a)
+    run_b = _find_run_dir(out_b)
+
+    cadence_a = (run_a / "cadence.jsonl").read_text(encoding="utf-8")
+    cadence_b = (run_b / "cadence.jsonl").read_text(encoding="utf-8")
+    assert cadence_a == cadence_b
+
+    records = _load_jsonl(run_a / "cadence.jsonl")
+    assert any(record["mode"] == "event" for record in records)
