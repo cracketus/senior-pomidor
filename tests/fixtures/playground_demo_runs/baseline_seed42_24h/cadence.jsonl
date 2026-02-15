@@ -1,0 +1,12 @@
+{"timestamp": "2026-02-15T00:00:00+00:00", "cycle": 0, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T02:00:00+00:00", "cycle": 1, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T04:00:00+00:00", "cycle": 2, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T06:00:00+00:00", "cycle": 3, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T08:00:00+00:00", "cycle": 4, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T10:00:00+00:00", "cycle": 5, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T12:00:00+00:00", "cycle": 6, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T14:00:00+00:00", "cycle": 7, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T16:00:00+00:00", "cycle": 8, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T18:00:00+00:00", "cycle": 9, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T20:00:00+00:00", "cycle": 10, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}
+{"timestamp": "2026-02-15T22:00:00+00:00", "cycle": 11, "mode": "baseline", "interval_seconds": 7200, "event_mode_active_until_seconds": null}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "run_summary_v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "scenario",
+    "seed",
+    "duration_hours",
+    "available_logs",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "run_summary_v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scenario": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "duration_hours": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "available_logs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "state_records",
+        "anomaly_records",
+        "sensor_health_records",
+        "cadence_records"
+      ],
+      "properties": {
+        "state_records": { "type": "integer", "minimum": 0 },
+        "anomaly_records": { "type": "integer", "minimum": 0 },
+        "sensor_health_records": { "type": "integer", "minimum": 0 },
+        "cadence_records": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

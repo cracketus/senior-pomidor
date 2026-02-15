@@ -1,0 +1,26 @@
+# Playground Demo Fixtures (Stage 1)
+
+These fixtures are canonical deterministic runs for investor/demo playback.
+
+## Fixtures
+- `baseline_seed42_24h` (`scenario=none`)
+- `heatwave_seed42_24h` (`scenario=heatwave`)
+
+Each fixture contains:
+- `state.jsonl`
+- `anomalies.jsonl`
+- `sensor_health.jsonl`
+- `observations.jsonl`
+- `cadence.jsonl`
+- `manifest.json` (hashes + summary metrics)
+
+## Regeneration
+Run from repository root:
+
+```powershell
+python scripts/generate_playground_demo_fixtures.py
+```
+
+Expected behavior:
+- fixture directories are recreated deterministically
+- artifact files remain byte-identical for identical seed/scenario/config

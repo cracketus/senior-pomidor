@@ -1,0 +1,33 @@
+# Playground API Compatibility Policy (Stage 1)
+
+This policy maps the playground technical specification routes to current Stage 1 implementation status.
+
+## Status Definitions
+- `implemented`: endpoint can be fully backed by current Stage 1 artifacts.
+- `read_only_stub`: endpoint exists but returns explicit unsupported metadata.
+- `deferred`: endpoint requires not-yet-implemented Stage 2+ runtime components.
+
+## Route Mapping
+| Route | Spec Area | Stage 1 Status | Notes |
+|---|---|---|---|
+| `GET /api/capabilities` | General | implemented | Advertises feature availability flags. |
+| `GET /api/runs` | Simulation/Logs | implemented | Enumerates available run fixtures and metadata. |
+| `GET /api/sim/status` | Simulation | implemented | Derived from selected run manifest and latest cadence record. |
+| `GET /api/pipeline/current` | Pipeline | implemented | Latest state + anomaly summary + cadence mode. |
+| `GET /api/logs/states` | Logs | implemented | Serves `StateV1` records from JSONL. |
+| `GET /api/logs/anomalies` | Logs | implemented | Serves `AnomalyV1` records from JSONL. |
+| `GET /api/logs/sensor_health` | Logs | implemented | Serves `SensorHealthV1` records from JSONL. |
+| `GET /api/logs/cadence` | Logs | implemented | Serves cadence records from JSONL. |
+| `GET /api/logs/actions` | Logs | read_only_stub | Returns empty list and `unsupported_in_stage1=true`. |
+| `GET /api/logs/export_public` | Logs | implemented | Uses public subset export behavior. |
+| `POST /api/sim/start` | Simulation Controls | deferred | Requires mutable runtime orchestration service. |
+| `POST /api/sim/pause` | Simulation Controls | deferred | Requires mutable runtime orchestration service. |
+| `POST /api/sim/step` | Simulation Controls | deferred | Requires mutable runtime orchestration service. |
+| `POST /api/sim/speed` | Simulation Controls | deferred | Requires mutable runtime orchestration service. |
+| `POST /api/sim/jump` | Simulation Controls | deferred | Requires mutable runtime orchestration service. |
+| `POST /api/pipeline/run_once` | Pipeline Controls | deferred | Requires runtime control/execution pipeline. |
+| `POST /api/vision/analyze` | Vision | deferred | Vision/LLM runtime not implemented. |
+| `POST /api/vision/attach` | Vision | deferred | Vision/LLM runtime not implemented. |
+
+## Non-Negotiable Rule
+Stage 1 playground UI must derive feature availability from capabilities and never display deferred features as active.
