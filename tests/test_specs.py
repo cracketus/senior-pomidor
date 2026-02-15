@@ -56,6 +56,15 @@ class TestSpecificationDocuments:
         lower = content.lower()
         assert "fail-fast" in lower or "fail fast" in lower
 
+    def test_state_v1_weather_adapter_mapping_doc_exists(self):
+        """Mapper documentation should define field and unit transformations."""
+        doc_path = Path("docs/state_v1_weather_adapter_mapping.md")
+        assert doc_path.exists(), "docs/state_v1_weather_adapter_mapping.md not found"
+        content = doc_path.read_text(encoding="utf-8")
+        assert "Field Mapping and Units" in content
+        assert "StateV1.soil_moisture_avg * 100" in content
+        assert "brain/world_model/state_v1_weather_adapter_mapper.py" in content
+
     def test_agents_status_consistency(self):
         """AGENTS status blocks should match implemented Stage 1 components."""
         content = Path("AGENTS.md").read_text(encoding="utf-8")
@@ -92,6 +101,7 @@ class TestSpecificationDocuments:
             Path("docs/confidence_scoring.md"),
             Path("docs/anomaly_thresholds.md"),
             Path("docs/error_handling.md"),
+            Path("docs/state_v1_weather_adapter_mapping.md"),
         ]
 
         for path in docs:
