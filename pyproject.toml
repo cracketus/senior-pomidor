@@ -38,7 +38,7 @@ packages = ["brain"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-v --cov=brain --cov-report=term-missing --cov-report=html"
+addopts = "-v --cov=brain --cov-report=term-missing --cov-report=html --cov-fail-under=80"
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"

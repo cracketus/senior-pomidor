@@ -1,4 +1,4 @@
-﻿# CODEX
+# CODEX
 
 Pragmatic guide for Codex agents working in this repo.
 

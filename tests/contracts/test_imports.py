@@ -2,7 +2,13 @@
 
 import pytest
 
-from brain.contracts import ActionV1, AnomalyV1, SensorHealthV1, StateV1
+from brain.contracts import (
+    ActionV1,
+    AnomalyV1,
+    GuardrailResultV1,
+    SensorHealthV1,
+    StateV1,
+)
 
 
 def test_all_contracts_are_importable():
@@ -10,4 +16,5 @@ def test_all_contracts_are_importable():
     assert StateV1 is not None
     assert ActionV1 is not None
     assert AnomalyV1 is not None
+    assert GuardrailResultV1 is not None
     assert SensorHealthV1 is not None
