@@ -156,12 +156,17 @@ def detect_anomalies(
             anomaly_type = AnomalyType.SENSOR_DISCONNECT
         else:
             anomaly_type = AnomalyType.UNKNOWN
+        fault_label = (
+            health.fault_state.value
+            if hasattr(health.fault_state, "value")
+            else str(health.fault_state)
+        )
         anomalies.append(
             _make_anomaly(
                 now,
                 anomaly_type,
                 _severity_for_fault(health.fault_state),
-                f"Sensor fault detected: {health.fault_state.value}",
+                f"Sensor fault detected: {fault_label}",
                 affected_sensor=health.sensor_name,
             )
         )

@@ -1,0 +1,113 @@
+﻿"""Integration test for 24h deterministic simulation run."""
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+from brain.contracts import AnomalyV1, DeviceStatusV1, ObservationV1, SensorHealthV1, StateV1
+
+
+def _run_simulate(output_dir: Path, seed: int) -> subprocess.CompletedProcess:
+    args = [
+        sys.executable,
+        "scripts/simulate_day.py",
+        "--output-dir",
+        str(output_dir),
+        "--duration-hours",
+        "24",
+        "--seed",
+        str(seed),
+        "--time-scale",
+        "1000000",
+        "--scenario",
+        "none",
+    ]
+    return subprocess.run(args, cwd=Path.cwd(), capture_output=True, text=True)
+
+
+def _find_run_dir(output_dir: Path) -> Path:
+    runs = [p for p in output_dir.iterdir() if p.is_dir() and p.name.startswith("run_")]
+    assert len(runs) == 1
+    return runs[0]
+
+
+def _read_lines(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    content = path.read_text(encoding="utf-8").strip()
+    return [] if not content else content.splitlines()
+
+
+def _load_jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in _read_lines(path)]
+
+
+def test_24h_simclock_run_produces_expected_state_count(tmp_path):
+    result = _run_simulate(tmp_path, seed=42)
+    assert result.returncode == 0, result.stderr
+
+    run_dir = _find_run_dir(tmp_path)
+    state_records = _load_jsonl(run_dir / "state.jsonl")
+
+    assert len(state_records) >= 12
+
+
+def test_24h_run_has_no_unhandled_exceptions(tmp_path):
+    result = _run_simulate(tmp_path, seed=123)
+    assert result.returncode == 0, result.stderr
+
+
+def test_24h_run_outputs_validate_against_contracts(tmp_path):
+    result = _run_simulate(tmp_path, seed=7)
+    assert result.returncode == 0, result.stderr
+
+    run_dir = _find_run_dir(tmp_path)
+
+    for payload in _load_jsonl(run_dir / "state.jsonl"):
+        StateV1.model_validate(payload, strict=False)
+
+    for payload in _load_jsonl(run_dir / "anomalies.jsonl"):
+        AnomalyV1.model_validate(payload, strict=False)
+
+    for payload in _load_jsonl(run_dir / "sensor_health.jsonl"):
+        SensorHealthV1.model_validate(payload, strict=False)
+
+    for payload in _load_jsonl(run_dir / "observations.jsonl"):
+        ObservationV1.model_validate(payload["observation"], strict=False)
+        DeviceStatusV1.model_validate(payload["device_status"], strict=False)
+
+
+def test_24h_run_is_deterministic_with_fixed_seed(tmp_path):
+    out_a = tmp_path / "a"
+    out_b = tmp_path / "b"
+
+    result_a = _run_simulate(out_a, seed=99)
+    result_b = _run_simulate(out_b, seed=99)
+
+    assert result_a.returncode == 0, result_a.stderr
+    assert result_b.returncode == 0, result_b.stderr
+
+    run_a = _find_run_dir(out_a)
+    run_b = _find_run_dir(out_b)
+
+    assert (run_a / "state.jsonl").read_text(encoding="utf-8") == (
+        run_b / "state.jsonl"
+    ).read_text(encoding="utf-8")
+
+
+def test_24h_run_jsonl_files_are_readable(tmp_path):
+    result = _run_simulate(tmp_path, seed=55)
+    assert result.returncode == 0, result.stderr
+
+    run_dir = _find_run_dir(tmp_path)
+
+    for name in [
+        "state.jsonl",
+        "anomalies.jsonl",
+        "sensor_health.jsonl",
+        "observations.jsonl",
+    ]:
+        path = run_dir / name
+        for line in _read_lines(path):
+            json.loads(line)
