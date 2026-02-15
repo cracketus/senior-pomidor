@@ -1,4 +1,4 @@
-# 📖 Development Instructions
+﻿# 📖 Development Instructions
 
 A quick start and reference guide for developers working on Tomato Brain.
 
@@ -51,19 +51,13 @@ This generates an HTML coverage report in `htmlcov/index.html`.
 ### Specific test file
 
 ```bash
-pytest tests/estimator/test_vpd.py -v
+pytest tests/sources/test_synthetic_source.py -v
 ```
 
 ### Run only tests matching a pattern
 
 ```bash
 pytest -k "deterministic" -v
-```
-
-### Run integration tests
-
-```bash
-pytest tests/integration/ -v
 ```
 
 ---
@@ -141,66 +135,15 @@ gh pr create --title="TOMATO-1: Bootstrap production-ready repository skeleton" 
 
 ---
 
-## ⚡ Running Simulations
+## ⚡ Running Simulations (Planned)
 
-### Understanding the Decision Cycle
-
-The brain operates on a **2-hour decision cycle**:
-1. Read current observations and device state
-2. Estimate plant state (State Estimator)
-3. Forecast 36 hours ahead (World Model)
-4. Compute optimal actions (Control Layer)
-5. Validate safety constraints (Guardrails)
-6. Analyze plant photo if available (LLM Agent)
-7. Persist all state/action/anomaly records (Storage)
-
-In **event-driven mode** (anomaly detected), the cycle tightens to **5–15 minutes** to respond quickly to:
-- Wind spikes
-- Severe anomalies (disconnects, overheating)
-- Sensor failures
-
-### Quick 24-hour simulation (accelerated)
-
-Run with default settings (logs saved to `data/runs/`):
-
-```bash
-python scripts/simulate_day.py
-```
-
-This executes 12 decision cycles (24h ÷ 2h) plus any event-driven cycles.
-
-### Custom time scale (speeds up or slows down)
-
-```bash
-# Run a 24-hour day in 10 wall-clock minutes (time_scale=144)
-python scripts/simulate_day.py --time-scale 144
-
-# Run at near real-time (time_scale=1)
-python scripts/simulate_day.py --time-scale 1
-```
-
-### Custom output directory
-
-```bash
-python scripts/simulate_day.py --output-dir ./my_results
-```
-
-### Reproducible with fixed seed
-
-```bash
-# Same seed = same observations = same state logs
-python scripts/simulate_day.py --seed 42
-```
-
-### All options
-
-```bash
-python scripts/simulate_day.py --help
-```
+Simulation workflow will be added in TOMATO-16. When `scripts/simulate_day.py` exists, this section will be updated with runnable commands.
 
 ---
 
 ## 📁 Project Structure Reference
+
+### Current
 
 ```
 senior-pomidor/
@@ -211,76 +154,46 @@ senior-pomidor/
 │   │   ├── action_v1.py
 │   │   ├── anomaly_v1.py
 │   │   ├── sensor_health_v1.py
-│   │   └── vision_v1.py          # LLM vision output
-│   ├── storage/            # JSONL storage and dataset management
-│   │   ├── jsonl_writer.py
-│   │   ├── rotation.py
-│   │   └── dataset_manager.py
-│   ├── sources/            # Observation sensors (real or synthetic)
+│   │   ├── observation_v1.py
+│   │   └── device_status_v1.py
+│   ├── sources/            # Observation sources (real or synthetic)
 │   │   ├── interface.py
 │   │   ├── synthetic_source.py
 │   │   └── replay_source.py
-│   ├── estimator/          # State estimation pipeline (Agent #2)
-│   │   ├── vpd.py
-│   │   ├── ring_buffer.py
-│   │   ├── confidence.py
-│   │   ├── anomaly_detector.py
-│   │   └── pipeline.py
-│   ├── world_model/        # 36h forecasting engine (Agent #3)
-│   │   ├── hybrid_forecast.py
-│   │   ├── soil_dynamics.py
-│   │   └── stress_assessment.py
-│   ├── control/            # MPC-lite decision layer (Agent #4)
-│   │   ├── objective.py
-│   │   ├── beam_search.py
-│   │   └── budget_planner.py
-│   ├── guardrails/         # Safety validation (Agent #5)
-│   │   ├── constraints.py
-│   │   └── safe_mode.py
-│   ├── llm_agent/          # Vision analysis (Agent #6)
-│   │   ├── qwen_local.py
-│   │   └── vision_contract.py
-│   ├── clock/              # Virtual and real clock (Agent #8)
-│   │   ├── clock.py        # Abstract Clock interface
-│   │   ├── real_clock.py
-│   │   └── sim_clock.py
-│   └── scheduler/          # Event loop and 2h cycle (Agent #8)
-│       ├── event_loop.py
-│       └── scheduler.py
+│   └── storage/            # JSONL storage and dataset management
+│       ├── jsonl_writer.py
+│       ├── dataset.py
+│       └── export.py
+├── docs/
+│   ├── anomaly_thresholds.md
+│   └── confidence_scoring.md
 ├── scripts/
-│   └── simulate_day.py     # End-to-end 24h simulation (Orchestrator)
+│   ├── create_github_issues.py
+│   └── export_issues_for_manual_creation.py
 ├── tests/                  # Test suite
-│   ├── test_smoke_import.py
 │   ├── contracts/
-│   ├── storage/
 │   ├── sources/
-│   ├── estimator/
-│   ├── world_model/
-│   ├── control/
-│   ├── guardrails/
-│   ├── llm_agent/
-│   ├── clock/
-│   ├── scheduler/
-│   ├── scripts/
-│   └── integration/
-├── data/                   # Data artifacts (generated by scripts)
-│   ├── private/            # Full-fidelity dataset (all fields)
-│   │   ├── states_YYYY-MM.jsonl
-│   │   ├── actions_YYYY-MM.jsonl
-│   │   ├── anomalies_YYYY-MM.jsonl
-│   │   └── images/
-│   ├── public/             # Public-safe exports (filtered)
-│   │   ├── states_public_YYYY-MM.jsonl
-│   │   ├── actions_public_YYYY-MM.jsonl
-│   │   └── anomalies_public_YYYY-MM.jsonl
-│   └── schema/             # JSON schema documentation
-├── pyproject.toml          # Python project metadata and dependencies
+│   ├── storage/
+│   └── fixtures/
 ├── README.md
-├── AGENTS.md               # System architecture and agent descriptions
-├── INSTRUCTIONS.md         # Developer guide
-├── SKILLS.md               # Capability inventory and roadmap
-└── TECHNICAL_SPECIFICATION.md  # Detailed requirements
+├── AGENTS.md
+├── INSTRUCTIONS.md
+├── SKILLS.md
+└── TECHNICAL_SPECIFICATION.md
 ```
+
+### Planned
+
+- `brain/estimator/`
+- `brain/world_model/`
+- `brain/control/`
+- `brain/guardrails/`
+- `brain/llm_agent/`
+- `brain/clock/`
+- `brain/scheduler/`
+- `scripts/simulate_day.py`
+- `tests/estimator/`, `tests/world_model/`, `tests/control/`, `tests/guardrails/`, `tests/llm_agent/`, `tests/clock/`, `tests/scheduler/`, `tests/integration/`
+- `PLANNED_FEATURES.md`
 
 ---
 
@@ -382,28 +295,12 @@ gh pr merge <pr-number> --merge
 
 **Import a specific module**:
 ```python
-from brain.estimator.vpd import calculate_vpd
-from brain.storage.jsonl_writer import JSONLWriter
+from brain.sources.synthetic_source import SyntheticSource
 ```
 
 **Check if it works**:
 ```bash
-python -c "from brain.estimator.vpd import calculate_vpd; print(calculate_vpd(20, 50))"
-```
-
-### Inspecting JSONL output
-
-After running a simulation, inspect the generated data:
-
-```bash
-# List dataset runs
-ls data/runs/
-
-# View a state log
-head -5 data/runs/run_20260214/state.jsonl
-
-# Parse and pretty-print a JSON record
-jq . data/runs/run_20260214/state.jsonl | head -1
+python -c "from brain.sources.synthetic_source import SyntheticSource; print(SyntheticSource)"
 ```
 
 ---
@@ -413,20 +310,19 @@ jq . data/runs/run_20260214/state.jsonl | head -1
 ### Tests fail with import error
 
 Make sure the package is installed in development mode:
+
 ```bash
 pip install -e .
 ```
 
 ### Simulation script complains about missing modules
 
-Verify all dependencies are installed:
-```bash
-pip list | grep -E "pytest|pydantic|ruff"
-```
+Simulation entrypoint is planned in TOMATO-16. If you see missing modules, verify dependencies are installed and check the issue status.
 
 ### JSONL files are unreadable
 
 Validate the JSONL format (should be line-delimited JSON):
+
 ```bash
 python -c "
 import json
@@ -438,10 +334,6 @@ with open('data/runs/run_20260214/state.jsonl') as f:
             print(f'Line {i+1} invalid: {e}')
 "
 ```
-
-### Code is formatted differently after `ruff format`
-
-That's expected. Commit the changes and move on—ruff enforces consistent style.
 
 ---
 
@@ -478,14 +370,14 @@ Use clear, concise docstrings:
 def calculate_vpd(temp_c: float, rh_percent: float) -> float:
     """
     Calculate vapor pressure deficit.
-    
+
     Args:
         temp_c: Temperature in Celsius
         rh_percent: Relative humidity as percentage (0-100)
-    
+
     Returns:
         VPD in kilopascals (kPa)
-    
+
     Raises:
         ValueError: If inputs are out of realistic plant range
     """
@@ -500,16 +392,14 @@ def calculate_vpd(temp_c: float, rh_percent: float) -> float:
 
 ---
 
-## 🔄 Workflow: Adding a Feature
+## 🔁 Workflow: Adding a Feature
 
-1. **Create a branch**: `git checkout -b feature/my-feature`
-2. **Write tests first** (or alongside): `tests/my_module/test_new_feature.py`
-3. **Implement**: Add code to `brain/my_module/`
-4. **Check imports**: `ruff check brain/ tests/`
-5. **Format**: `ruff format brain/ tests/`
-6. **Test**: `pytest tests/my_module/ -v`
-7. **Run full suite**: `pytest --cov=brain`
-8. **Commit**: `git add . && git commit -m "feat: describe your feature"`
+1. Create a branch: `git checkout -b TOMATO-19/short-description`
+2. Write or update tests under `tests/`
+3. Implement changes under `brain/` or `scripts/`
+4. Run checks: `ruff check brain/ tests/ && ruff format brain/ tests/`
+5. Run tests: `pytest tests/ -v`
+6. Commit: `git add . && git commit -m "TOMATO-19: Describe your feature"`
 
 ---
 
@@ -517,21 +407,22 @@ def calculate_vpd(temp_c: float, rh_percent: float) -> float:
 
 | File | Purpose |
 |------|---------|
-| [README.md](README.md) | Overview, philosophy, and MVP scope |
-| [AGENTS.md](AGENTS.md) | Agent architecture and data flow |
-| [INSTRUCTIONS.md](INSTRUCTIONS.md) | This file—how to develop |
-| [SKILLS.md](SKILLS.md) | Current capabilities and roadmap |
-| [TECHNICAL_SPECIFICATION.md.md](TECHNICAL_SPECIFICATION.md.md) | Detailed acceptance criteria for each module |
+| `README.md` | Overview, philosophy, and MVP scope |
+| `AGENTS.md` | Agent architecture and data flow |
+| `INSTRUCTIONS.md` | This file—how to develop |
+| `SKILLS.md` | Current capabilities and roadmap |
+| `TECHNICAL_SPECIFICATION.md` | Detailed requirements for each module |
+| `PLANNED_FEATURES.md` | Planned stages and not-yet-implemented components |
 
 ---
 
 ## ❓ Getting Help
 
-- **Understanding architecture**: See [AGENTS.md](AGENTS.md)
-- **Understanding capabilities**: See [SKILLS.md](SKILLS.md)
-- **Understanding requirements**: See [TECHNICAL_SPECIFICATION.md.md](TECHNICAL_SPECIFICATION.md.md)
+- **Understanding architecture**: See `AGENTS.md`
+- **Understanding capabilities**: See `SKILLS.md`
+- **Understanding requirements**: See `TECHNICAL_SPECIFICATION.md`
 - **Understanding contracts**: Look at docstrings in `brain/contracts/`
-- **Understanding estimator logic**: Look at unit tests in `tests/estimator/`
+- **Understanding storage logic**: Look at unit tests in `tests/storage/`
 
 ---
 
@@ -543,7 +434,7 @@ Checklist:
 - [ ] Code is formatted: `ruff format brain/ tests/`
 - [ ] No linting errors: `ruff check brain/ tests/`
 - [ ] Commit message is clear and follows conventions
-- [ ] Related tests are added/updated
+- [ ] Related tests are added or updated
 - [ ] No unrelated changes are included
 
 ---
