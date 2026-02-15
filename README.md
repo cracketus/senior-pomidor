@@ -46,8 +46,10 @@ ruff check .
 ruff check . --fix
 
 # Simulate 24-hour day (accelerated time)
-python scripts/simulate_day.py
+python scripts/simulate_day.py --seed 42 --duration-hours 24 --time-scale 120 --output-dir data/runs
 ```
+
+Main loop (every 2 hours): observation → estimate → store → advance.
 
 ---
 
