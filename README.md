@@ -226,6 +226,7 @@ The goal is to build an open embodied AI system that the community can inspect a
 - `docs/confidence_scoring.md`
 - `docs/anomaly_thresholds.md`
 - `docs/error_handling.md`
+- `docs/state_v1_weather_adapter_mapping.md`
 
 ---
 
