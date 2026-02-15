@@ -28,7 +28,7 @@ VPD_REFERENCE_CASES = [
         description="Comfortable daytime conditions (22°C, 65% RH)",
         air_temperature_celsius=22.0,
         relative_humidity_percent=65.0,
-        expected_vpd_kpa=1.19,
+        expected_vpd_kpa=0.924,
         tolerance_kpa=0.05,
     ),
     VPDReferenceCase(
@@ -36,7 +36,7 @@ VPD_REFERENCE_CASES = [
         description="Warm, dry conditions (28°C, 40% RH) - high VPD stress",
         air_temperature_celsius=28.0,
         relative_humidity_percent=40.0,
-        expected_vpd_kpa=2.35,
+        expected_vpd_kpa=2.267,
         tolerance_kpa=0.05,
     ),
     VPDReferenceCase(
@@ -44,7 +44,7 @@ VPD_REFERENCE_CASES = [
         description="Cool, humid night (15°C, 80% RH) - low VPD",
         air_temperature_celsius=15.0,
         relative_humidity_percent=80.0,
-        expected_vpd_kpa=0.31,
+        expected_vpd_kpa=0.341,
         tolerance_kpa=0.05,
     ),
     VPDReferenceCase(
@@ -52,7 +52,7 @@ VPD_REFERENCE_CASES = [
         description="Cold conditions (5°C, 95% RH) - minimal VPD",
         air_temperature_celsius=5.0,
         relative_humidity_percent=95.0,
-        expected_vpd_kpa=0.025,
+        expected_vpd_kpa=0.044,
         tolerance_kpa=0.05,
     ),
     VPDReferenceCase(
@@ -60,7 +60,7 @@ VPD_REFERENCE_CASES = [
         description="Hot, dry alert conditions (35°C, 25% RH) - extreme VPD",
         air_temperature_celsius=35.0,
         relative_humidity_percent=25.0,
-        expected_vpd_kpa=4.25,
+        expected_vpd_kpa=4.221,
         tolerance_kpa=0.10,
     ),
     VPDReferenceCase(
@@ -68,7 +68,7 @@ VPD_REFERENCE_CASES = [
         description="Optimal growth conditions (24°C, 70% RH)",
         air_temperature_celsius=24.0,
         relative_humidity_percent=70.0,
-        expected_vpd_kpa=1.07,
+        expected_vpd_kpa=0.894,
         tolerance_kpa=0.05,
     ),
     VPDReferenceCase(
@@ -84,7 +84,7 @@ VPD_REFERENCE_CASES = [
         description="Very warm, moderate humidity (32°C, 50% RH)",
         air_temperature_celsius=32.0,
         relative_humidity_percent=50.0,
-        expected_vpd_kpa=2.64,
+        expected_vpd_kpa=2.378,
         tolerance_kpa=0.10,
     ),
 ]
