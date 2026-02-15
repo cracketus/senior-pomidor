@@ -1,0 +1,47 @@
+{
+  "schema_version": "playground_demo_manifest_v1",
+  "fixture_name": "heatwave_seed42_24h",
+  "seed": 42,
+  "duration_hours": 24.0,
+  "time_scale": 1000000.0,
+  "scenario": "heatwave",
+  "artifacts": [
+    "state.jsonl",
+    "anomalies.jsonl",
+    "sensor_health.jsonl",
+    "observations.jsonl",
+    "cadence.jsonl"
+  ],
+  "file_hashes_sha256": {
+    "state.jsonl": "358a6e9e049ddbfee9960baa0434dfe5625c9250531c957d0842d97f7ee91a85",
+    "anomalies.jsonl": "b0cb0a2cbc424bdb95b791aa918fbb33b2018f37e3f1981ebc0256eb31aa0379",
+    "sensor_health.jsonl": "350a6583351f10ded0e355587be4ba7070633070494dc081c30dc03b4a86c4c1",
+    "observations.jsonl": "5d211b9158526f3cf8f30708778bda9e52395ea461baa061723553f15a75d8dd",
+    "cadence.jsonl": "68944e3271e5f30da1dbcd09986ba7904381721e300063ad71f3dd791eb91523"
+  },
+  "metrics": {
+    "state_records": 89,
+    "anomaly_records": 200,
+    "sensor_health_records": 534,
+    "observation_records": 89,
+    "cadence_records": 89,
+    "cadence_by_mode": {
+      "baseline": 1,
+      "event": 88
+    },
+    "interval_counts": {
+      "7200": 1,
+      "900": 88
+    },
+    "anomalies_by_severity": {
+      "high": 178,
+      "medium": 22
+    },
+    "anomalies_by_type": {
+      "vpd_out_of_range": 89,
+      "temperature_stress": 89,
+      "sensor_drift": 19,
+      "sensor_stuck": 3
+    }
+  }
+}

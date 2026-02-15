@@ -1,0 +1,41 @@
+{
+  "schema_version": "playground_demo_manifest_v1",
+  "fixture_name": "baseline_seed42_24h",
+  "seed": 42,
+  "duration_hours": 24.0,
+  "time_scale": 1000000.0,
+  "scenario": "none",
+  "artifacts": [
+    "state.jsonl",
+    "anomalies.jsonl",
+    "sensor_health.jsonl",
+    "observations.jsonl",
+    "cadence.jsonl"
+  ],
+  "file_hashes_sha256": {
+    "state.jsonl": "db2b136779eb6cd7f02176380e7a1f333a577e14bb1803b2edc2fa63a52ed08c",
+    "anomalies.jsonl": "235b9ce4dd371804950885ce91f44d4ae284f516698c235d67515cb6fd8b04d1",
+    "sensor_health.jsonl": "5300d258bbe44af3f095a836cdb91a25eb8eb44f7832e33b4efbc93c3073a17a",
+    "observations.jsonl": "e74d1209acf3fddc9a30dd7115924fd754c635bbbc29d2eb42ce8ec03900c4a6",
+    "cadence.jsonl": "eb9e809e4cc767e082d37b490156c48da17b75c3eb28511ee6cf45b6447cfc26"
+  },
+  "metrics": {
+    "state_records": 12,
+    "anomaly_records": 8,
+    "sensor_health_records": 72,
+    "observation_records": 12,
+    "cadence_records": 12,
+    "cadence_by_mode": {
+      "baseline": 12
+    },
+    "interval_counts": {
+      "7200": 12
+    },
+    "anomalies_by_severity": {
+      "medium": 8
+    },
+    "anomalies_by_type": {
+      "sensor_drift": 8
+    }
+  }
+}
