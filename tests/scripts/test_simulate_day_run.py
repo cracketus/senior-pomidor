@@ -44,11 +44,18 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     state_path = run_dir / "state.jsonl"
     anomaly_path = run_dir / "anomalies.jsonl"
     observations_path = run_dir / "observations.jsonl"
+    actions_path = run_dir / "actions.jsonl"
 
     assert state_path.exists()
     assert anomaly_path.exists()
     assert observations_path.exists()
+    assert actions_path.exists()
     assert len(_read_lines(state_path)) >= 1
+
+    action_records = _load_jsonl(actions_path)
+    for record in action_records:
+        assert record["schema_version"] == "action_v1"
+        assert record["action_type"] == "water"
 
 
 def test_time_scale_does_not_change_logical_count(tmp_path):
