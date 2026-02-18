@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Callable
 
 from brain.clock import SimClock
+from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
@@ -127,18 +128,22 @@ def run_simulation(args: argparse.Namespace) -> Path:
     health_path = run_dir / "sensor_health.jsonl"
     observations_path = run_dir / "observations.jsonl"
     cadence_path = run_dir / "cadence.jsonl"
+    actions_path = run_dir / "actions.jsonl"
 
     _touch(anomalies_path)
     _touch(health_path)
     _touch(cadence_path)
+    _touch(actions_path)
 
     state_writer = JSONLWriter(str(state_path))
     anomaly_writer = JSONLWriter(str(anomalies_path))
     health_writer = JSONLWriter(str(health_path))
     observations_writer = JSONLWriter(str(observations_path))
     cadence_writer = JSONLWriter(str(cadence_path))
+    actions_writer = JSONLWriter(str(actions_path))
 
     clock = SimClock(time_scale=1.0, start_time=start_time)
+    controller = BaselineWaterController()
 
     elapsed = 0
     event_mode_until: int | None = None
@@ -175,6 +180,11 @@ def run_simulation(args: argparse.Namespace) -> Path:
             anomaly_writer.append(anomaly.model_dump(mode="json"))
         for health in sensor_health:
             health_writer.append(health.model_dump(mode="json"))
+
+        # Stage 2 scope: propose only WATER actions; other action types are deferred.
+        action = controller.propose_action(state, now=now)
+        if action is not None:
+            actions_writer.append(action.model_dump(mode="json"))
 
         if any(_is_high_severity(anomaly) for anomaly in anomalies):
             candidate_until = elapsed + EVENT_WINDOW_SECONDS
