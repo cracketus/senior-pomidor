@@ -9,6 +9,7 @@ from brain.contracts import (
     ActionV1,
     AnomalyV1,
     DeviceStatusV1,
+    GuardrailResultV1,
     ObservationV1,
     SensorHealthV1,
     StateV1,
@@ -92,6 +93,9 @@ def test_24h_run_outputs_validate_against_contracts(tmp_path):
     for payload in _load_jsonl(run_dir / "actions.jsonl"):
         ActionV1.model_validate(payload, strict=False)
 
+    for payload in _load_jsonl(run_dir / "guardrail_results.jsonl"):
+        GuardrailResultV1.model_validate(payload, strict=False)
+
 
 def test_24h_run_is_deterministic_with_fixed_seed(tmp_path):
     out_a = tmp_path / "a"
@@ -124,6 +128,7 @@ def test_24h_run_jsonl_files_are_readable(tmp_path):
         "observations.jsonl",
         "cadence.jsonl",
         "actions.jsonl",
+        "guardrail_results.jsonl",
     ]:
         path = run_dir / name
         for line in _read_lines(path):
@@ -149,6 +154,7 @@ def test_24h_run_all_artifacts_are_deterministic(tmp_path):
         "sensor_health.jsonl",
         "observations.jsonl",
         "actions.jsonl",
+        "guardrail_results.jsonl",
     ]:
         left = (run_a / artifact).read_text(encoding="utf-8")
         right = (run_b / artifact).read_text(encoding="utf-8")

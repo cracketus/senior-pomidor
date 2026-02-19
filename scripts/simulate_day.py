@@ -12,6 +12,7 @@ from typing import Callable
 from brain.clock import SimClock
 from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
+from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
 from brain.storage.jsonl_writer import JSONLWriter
@@ -129,11 +130,13 @@ def run_simulation(args: argparse.Namespace) -> Path:
     observations_path = run_dir / "observations.jsonl"
     cadence_path = run_dir / "cadence.jsonl"
     actions_path = run_dir / "actions.jsonl"
+    guardrail_results_path = run_dir / "guardrail_results.jsonl"
 
     _touch(anomalies_path)
     _touch(health_path)
     _touch(cadence_path)
     _touch(actions_path)
+    _touch(guardrail_results_path)
 
     state_writer = JSONLWriter(str(state_path))
     anomaly_writer = JSONLWriter(str(anomalies_path))
@@ -141,9 +144,11 @@ def run_simulation(args: argparse.Namespace) -> Path:
     observations_writer = JSONLWriter(str(observations_path))
     cadence_writer = JSONLWriter(str(cadence_path))
     actions_writer = JSONLWriter(str(actions_path))
+    guardrail_results_writer = JSONLWriter(str(guardrail_results_path))
 
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
+    guardrails = GuardrailsValidator()
 
     elapsed = 0
     event_mode_until: int | None = None
@@ -182,9 +187,18 @@ def run_simulation(args: argparse.Namespace) -> Path:
             health_writer.append(health.model_dump(mode="json"))
 
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
-        action = controller.propose_action(state, now=now)
-        if action is not None:
-            actions_writer.append(action.model_dump(mode="json"))
+        proposed_action = controller.propose_action(state, now=now)
+        if proposed_action is not None:
+            effective_action, guardrail_result = guardrails.validate(
+                proposed_action,
+                state=state,
+                device_status=device_status,
+                anomalies=anomalies,
+                now=now,
+            )
+            guardrail_results_writer.append(guardrail_result.model_dump(mode="json"))
+            if effective_action is not None:
+                actions_writer.append(effective_action.model_dump(mode="json"))
 
         if any(_is_high_severity(anomaly) for anomaly in anomalies):
             candidate_until = elapsed + EVENT_WINDOW_SECONDS
