@@ -334,3 +334,18 @@ As the system grows, new agents may be added:
 - **Human Interface Agent**: Export public data; web API or CLI for monitoring and overrides.
 
 Each will follow the same messaging discipline, versioned Pydantic contracts, and safety-first principles.
+
+---
+
+## Stage 2 Runtime Note
+
+The current Stage 2 simulation baseline now includes:
+
+- water-only control proposals in `scripts/simulate_day.py`
+- runtime guardrails validation with standardized reason codes
+- log-only mock executor events for execution-path observability
+
+Deferred to later stages:
+
+- non-water control policies (`light`, `fan`, `co2`, `circulate`)
+- hardware actuator execution

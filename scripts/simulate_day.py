@@ -12,6 +12,7 @@ from typing import Callable
 from brain.clock import SimClock
 from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
+from brain.executor import MockExecutor
 from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
@@ -131,12 +132,14 @@ def run_simulation(args: argparse.Namespace) -> Path:
     cadence_path = run_dir / "cadence.jsonl"
     actions_path = run_dir / "actions.jsonl"
     guardrail_results_path = run_dir / "guardrail_results.jsonl"
+    executor_log_path = run_dir / "executor_log.jsonl"
 
     _touch(anomalies_path)
     _touch(health_path)
     _touch(cadence_path)
     _touch(actions_path)
     _touch(guardrail_results_path)
+    _touch(executor_log_path)
 
     state_writer = JSONLWriter(str(state_path))
     anomaly_writer = JSONLWriter(str(anomalies_path))
@@ -145,10 +148,12 @@ def run_simulation(args: argparse.Namespace) -> Path:
     cadence_writer = JSONLWriter(str(cadence_path))
     actions_writer = JSONLWriter(str(actions_path))
     guardrail_results_writer = JSONLWriter(str(guardrail_results_path))
+    executor_log_writer = JSONLWriter(str(executor_log_path))
 
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
     guardrails = GuardrailsValidator()
+    executor = MockExecutor()
 
     elapsed = 0
     event_mode_until: int | None = None
@@ -197,6 +202,13 @@ def run_simulation(args: argparse.Namespace) -> Path:
                 now=now,
             )
             guardrail_results_writer.append(guardrail_result.model_dump(mode="json"))
+            executor_event = executor.execute(
+                proposed_action=proposed_action,
+                effective_action=effective_action,
+                guardrail_result=guardrail_result,
+                now=now,
+            )
+            executor_log_writer.append(executor_event.model_dump(mode="json"))
             if effective_action is not None:
                 actions_writer.append(effective_action.model_dump(mode="json"))
 

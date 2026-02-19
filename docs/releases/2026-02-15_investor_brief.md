@@ -9,6 +9,10 @@ This is an engineering evidence snapshot, not a full product launch. Claims belo
   - `StateV1`
   - `AnomalyV1`
   - `SensorHealthV1`
+- Stage 2 water-only control proposals and guardrails outcomes:
+  - `ActionV1` logs (`actions.jsonl`)
+  - `GuardrailResultV1` logs (`guardrail_results.jsonl`)
+  - mock executor observability (`executor_log.jsonl`)
 - Event-aware sampling behavior: cadence tightens under high-severity anomalies.
 - Transparent JSONL logs suitable for audit, replay, and investor-facing demos.
 
@@ -26,12 +30,13 @@ This is an engineering evidence snapshot, not a full product launch. Claims belo
 
 ## What Is Explicitly Not Shipped Yet
 - Runtime autonomous control decisions.
-- Actuator execution loop on real hardware.
+- Non-water control policy runtime (`light`, `fan`, `co2`, `circulate`).
+- Actuator execution loop on real hardware (current executor is log-only).
 - Runtime world-model forecasting and weather adaptation.
 - Runtime vision/LLM analysis loop.
 
 ## Near-Term Build Path
-- Stage 2: baseline control + guardrails + mock executor.
+- Stage 2 expansion: broaden control beyond water-only and integrate hardware executor.
 - Stage 3: weather integration and forecast-hosted adaptation.
 - Stage 4: vision analysis integration.
 - Separate `senior-pomidor-playground` repo: read-only observability frontend backed by Stage 1 JSONL artifacts.

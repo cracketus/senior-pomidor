@@ -1,4 +1,4 @@
-# Playground Demo Fixtures (Stage 1)
+# Playground Demo Fixtures (Stage 2)
 
 These fixtures are canonical deterministic runs for investor/demo playback.
 
@@ -12,6 +12,9 @@ Each fixture contains:
 - `sensor_health.jsonl`
 - `observations.jsonl`
 - `cadence.jsonl`
+- `actions.jsonl`
+- `guardrail_results.jsonl`
+- `executor_log.jsonl`
 - `manifest.json` (hashes + summary metrics)
 
 ## Regeneration
