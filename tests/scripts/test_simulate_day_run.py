@@ -45,11 +45,13 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     anomaly_path = run_dir / "anomalies.jsonl"
     observations_path = run_dir / "observations.jsonl"
     actions_path = run_dir / "actions.jsonl"
+    guardrail_results_path = run_dir / "guardrail_results.jsonl"
 
     assert state_path.exists()
     assert anomaly_path.exists()
     assert observations_path.exists()
     assert actions_path.exists()
+    assert guardrail_results_path.exists()
     assert len(_read_lines(state_path)) >= 1
 
     action_records = _load_jsonl(actions_path)
@@ -57,6 +59,10 @@ def test_generates_state_and_anomaly_logs(tmp_path):
         assert record["schema_version"] == "action_v1"
         assert record["action_type"] == "water"
 
+    guardrail_records = _load_jsonl(guardrail_results_path)
+    for record in guardrail_records:
+        assert record["schema_version"] == "guardrail_result_v1"
+        assert record["decision"] in {"approved", "rejected", "clipped"}
 
 def test_time_scale_does_not_change_logical_count(tmp_path):
     out_a = tmp_path / "a"
