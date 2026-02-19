@@ -96,7 +96,6 @@ def test_24h_run_outputs_validate_against_contracts(tmp_path):
     for payload in _load_jsonl(run_dir / "guardrail_results.jsonl"):
         GuardrailResultV1.model_validate(payload, strict=False)
 
-
 def test_24h_run_is_deterministic_with_fixed_seed(tmp_path):
     out_a = tmp_path / "a"
     out_b = tmp_path / "b"

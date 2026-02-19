@@ -64,7 +64,6 @@ def test_generates_state_and_anomaly_logs(tmp_path):
         assert record["schema_version"] == "guardrail_result_v1"
         assert record["decision"] in {"approved", "rejected", "clipped"}
 
-
 def test_time_scale_does_not_change_logical_count(tmp_path):
     out_a = tmp_path / "a"
     out_b = tmp_path / "b"
