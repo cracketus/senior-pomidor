@@ -281,3 +281,24 @@ An open, real-world, embodied AI that grows tomatoes autonomously.
 We start with the brain.
 
 Everything else comes later.
+
+---
+
+## Stage 2 Runtime Status
+
+Current Stage 2 runtime in `scripts/simulate_day.py` includes:
+
+* Baseline water-only control proposals (`ActionV1`)
+* Guardrails validation with deterministic approve/reject/clip outcomes (`GuardrailResultV1`)
+* Log-only mock executor events (`ExecutorEventV1`)
+
+Additional Stage 2 artifacts per run:
+
+* `actions.jsonl`
+* `guardrail_results.jsonl`
+* `executor_log.jsonl`
+
+Scope note:
+
+* Stage 2 intentionally emits only `ActionType.WATER`.
+* `light`, `fan`, `co2`, and `circulate` control policies are deferred to later stages.

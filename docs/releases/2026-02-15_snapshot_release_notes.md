@@ -7,6 +7,9 @@ This snapshot covers what is implemented and test-verified in the `senior-pomido
 - Deterministic observation emission via `SyntheticSource` (seeded) and deterministic log replay via `ReplaySource`.
 - State estimation pipeline: `ObservationV1 + DeviceStatusV1 -> StateV1 + AnomalyV1[] + SensorHealthV1[]`.
 - Event-driven cadence changes in simulation when high-severity anomalies are detected (2h baseline to 15m event interval).
+- Stage 2 water-only control proposals persisted to `actions.jsonl`.
+- Stage 2 guardrails runtime validation persisted to `guardrail_results.jsonl`.
+- Stage 2 mock executor events persisted to `executor_log.jsonl`.
 - JSONL persistence with append, basic rotation helpers, and public subset export.
 - End-to-end simulation orchestration via `scripts/simulate_day.py`.
 - Flat `StateV1` to weather-adapter nested input mapping utility for Stage 3 schema alignment.
@@ -30,6 +33,9 @@ python scripts/generate_playground_demo_fixtures.py
   - `sensor_health.jsonl`
   - `observations.jsonl`
   - `cadence.jsonl`
+  - `actions.jsonl`
+  - `guardrail_results.jsonl`
+  - `executor_log.jsonl`
   - `manifest.json`
 
 ## Demo Story (Baseline vs Heatwave)
@@ -51,9 +57,8 @@ Narrative sequence for investor walkthrough:
 ## Known Gaps
 - No runtime World Model forecasting agent yet.
 - No runtime Weather Adapter policy engine yet.
-- No runtime Control layer issuing plant actions.
-- No runtime Guardrails enforcement layer for actions.
-- No Executor for actuator dispatch.
+- No non-water control policy runtime yet (`light`, `fan`, `co2`, `circulate`).
+- No hardware actuator dispatch runtime yet (simulation is log-only executor).
 - No Vision/LLM inference path.
 - No real hardware control loop.
 - No live weather API integration.
@@ -92,3 +97,4 @@ Every major claim above maps to at least one implementation file and one passing
 | C7 | Public subset export behavior | `brain/storage/export.py` | `tests/storage/test_export_public_subset.py` |
 | C8 | Stage 3 mapper bridge exists and validates | `brain/world_model/state_v1_weather_adapter_mapper.py` | `tests/world_model/test_state_v1_weather_adapter_mapper.py` |
 | C9 | Virtual clock and scheduler are implemented | `brain/clock/sim_clock.py` | `tests/scheduler/test_event_loop.py` |
+| C10 | Stage 2 guardrails + executor logs are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |

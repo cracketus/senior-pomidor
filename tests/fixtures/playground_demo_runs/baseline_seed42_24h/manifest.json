@@ -10,14 +10,20 @@
     "anomalies.jsonl",
     "sensor_health.jsonl",
     "observations.jsonl",
-    "cadence.jsonl"
+    "cadence.jsonl",
+    "actions.jsonl",
+    "guardrail_results.jsonl",
+    "executor_log.jsonl"
   ],
   "file_hashes_sha256": {
     "state.jsonl": "db2b136779eb6cd7f02176380e7a1f333a577e14bb1803b2edc2fa63a52ed08c",
     "anomalies.jsonl": "235b9ce4dd371804950885ce91f44d4ae284f516698c235d67515cb6fd8b04d1",
     "sensor_health.jsonl": "5300d258bbe44af3f095a836cdb91a25eb8eb44f7832e33b4efbc93c3073a17a",
     "observations.jsonl": "e74d1209acf3fddc9a30dd7115924fd754c635bbbc29d2eb42ce8ec03900c4a6",
-    "cadence.jsonl": "eb9e809e4cc767e082d37b490156c48da17b75c3eb28511ee6cf45b6447cfc26"
+    "cadence.jsonl": "eb9e809e4cc767e082d37b490156c48da17b75c3eb28511ee6cf45b6447cfc26",
+    "actions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "guardrail_results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "executor_log.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   "metrics": {
     "state_records": 12,
@@ -25,6 +31,9 @@
     "sensor_health_records": 72,
     "observation_records": 12,
     "cadence_records": 12,
+    "action_records": 0,
+    "guardrail_result_records": 0,
+    "executor_event_records": 0,
     "cadence_by_mode": {
       "baseline": 12
     },

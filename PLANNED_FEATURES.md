@@ -15,9 +15,12 @@ This file captures planned components and staged work that are not yet implement
 
 ## Stage 2 (Control and Guardrails)
 
-- Baseline control (threshold + budget planning)
-- Guardrails v1 for safety validation and safe-mode behavior
-- Mock executor (action dispatch stub for simulations)
+- Baseline control (water-only, deterministic policy) implemented
+- Guardrails v1 runtime validation (hybrid clip/reject) implemented
+- Mock executor (log-only dispatch stub for simulations) implemented
+- Remaining Stage 2 expansion:
+  - Add non-water action policies (light/fan/co2/circulate) in later stages
+  - Add hardware executor integration in later stages
 
 ---
 
@@ -33,8 +36,6 @@ This file captures planned components and staged work that are not yet implement
 ## Planned Agents (Not Yet Implemented)
 
 - World Model Agent
-- Control Layer Agent
-- Guardrails Agent
 - LLM Agent (Vision Analyzer)
 
 Implemented in Stage 1:
@@ -43,6 +44,11 @@ Implemented in Stage 1:
 - Storage Agent
 - Virtual Clock & Scheduler Agent
 - Integration Orchestrator foundation (`scripts/simulate_day.py`)
+
+Implemented in Stage 2 (simulation baseline):
+- Control Layer Agent (water-only policy)
+- Guardrails Agent (runtime validation and reason codes)
+- Mock Executor Agent (log-only execution path)
 
 ---
 
