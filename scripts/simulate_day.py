@@ -18,11 +18,13 @@ from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
 from brain.storage.jsonl_writer import JSONLWriter
+from brain.vision import BaselineVisionAnalyzer
 from brain.world_model import (
     WeatherAdapter,
     WeatherClient,
     map_state_v1_to_weather_adapter_input,
 )
+from brain.contracts import VisionInputV1
 
 DEFAULT_STEP_SECONDS = 2 * 60 * 60
 EVENT_STEP_SECONDS = 15 * 60
@@ -195,6 +197,8 @@ def run_simulation(args: argparse.Namespace) -> Path:
     targets_path = run_dir / "targets.jsonl"
     sampling_plan_path = run_dir / "sampling_plan.jsonl"
     weather_adapter_log_path = run_dir / "weather_adapter_log.jsonl"
+    vision_path = run_dir / "vision.jsonl"
+    vision_explanations_path = run_dir / "vision_explanations.jsonl"
 
     _touch(anomalies_path)
     _touch(health_path)
@@ -206,6 +210,8 @@ def run_simulation(args: argparse.Namespace) -> Path:
     _touch(targets_path)
     _touch(sampling_plan_path)
     _touch(weather_adapter_log_path)
+    _touch(vision_path)
+    _touch(vision_explanations_path)
 
     state_writer = JSONLWriter(str(state_path))
     anomaly_writer = JSONLWriter(str(anomalies_path))
@@ -219,6 +225,8 @@ def run_simulation(args: argparse.Namespace) -> Path:
     targets_writer = JSONLWriter(str(targets_path))
     sampling_plan_writer = JSONLWriter(str(sampling_plan_path))
     weather_adapter_log_writer = JSONLWriter(str(weather_adapter_log_path))
+    vision_writer = JSONLWriter(str(vision_path))
+    vision_explanations_writer = JSONLWriter(str(vision_explanations_path))
 
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
@@ -226,6 +234,7 @@ def run_simulation(args: argparse.Namespace) -> Path:
     executor = MockExecutor()
     weather_client = WeatherClient()
     weather_adapter = WeatherAdapter()
+    vision_analyzer = BaselineVisionAnalyzer()
 
     elapsed = 0
     event_mode_until: int | None = None
@@ -289,6 +298,22 @@ def run_simulation(args: argparse.Namespace) -> Path:
         targets_writer.append(weather_result.targets.model_dump(mode="json"))
         sampling_plan_writer.append(weather_result.sampling_plan.model_dump(mode="json"))
         weather_adapter_log_writer.append(weather_result.log.model_dump(mode="json"))
+
+        vision_input = VisionInputV1(
+            schema_version="vision_input_v1",
+            timestamp=now,
+            image_ref=f"sim://{run_dir.name}/cycle_{cycle_no:04d}.jpg",
+            state_ref=f"state_v1:{run_dir.name}:cycle_{cycle_no}",
+            telemetry_summary=(
+                f"vpd={state.vpd:.3f} "
+                f"soil_avg_pct={state.soil_moisture_avg * 100.0:.2f} "
+                f"conf={state.confidence:.3f}"
+            ),
+            camera_id="sim_cam_front",
+        )
+        vision, vision_explanation = vision_analyzer.analyze(vision_input)
+        vision_writer.append(vision.model_dump(mode="json"))
+        vision_explanations_writer.append(vision_explanation.model_dump(mode="json"))
 
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
         proposed_action = controller.propose_action(state, now=now)
