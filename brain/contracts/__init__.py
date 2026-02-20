@@ -16,6 +16,9 @@ from .sampling_plan_v1 import SamplingPlanV1
 from .sensor_health_v1 import SensorHealthV1
 from .state_v1 import StateV1
 from .targets_v1 import TargetsV1
+from .vision_explanation_v1 import VisionExplanationV1
+from .vision_input_v1 import VisionInputV1
+from .vision_v1 import VisionV1
 from .weather_adapter_log_v1 import WeatherAdapterLogV1
 
 __all__ = [
@@ -31,4 +34,7 @@ __all__ = [
     "TargetsV1",
     "SamplingPlanV1",
     "WeatherAdapterLogV1",
+    "VisionInputV1",
+    "VisionV1",
+    "VisionExplanationV1",
 ]
