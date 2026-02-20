@@ -349,3 +349,18 @@ Deferred to later stages:
 
 - non-water control policies (`light`, `fan`, `co2`, `circulate`)
 - hardware actuator execution
+
+## Stage 3 Runtime Note
+
+The current Stage 3 simulation baseline now includes:
+
+- deterministic normalized forecast stream (`forecast_36h.jsonl`)
+- deterministic weather-adapter targets stream (`targets.jsonl`)
+- deterministic weather-adapter sampling stream (`sampling_plan.jsonl`)
+- deterministic weather-adapter decision logs (`weather_adapter_log.jsonl`)
+
+Deferred to later stages:
+
+- live production weather API credentials/runtime secret handling
+- adaptive world-model learning and uncertainty calibration
+- production multi-actuator weather-adaptive control

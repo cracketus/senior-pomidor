@@ -47,6 +47,10 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     actions_path = run_dir / "actions.jsonl"
     guardrail_results_path = run_dir / "guardrail_results.jsonl"
     executor_log_path = run_dir / "executor_log.jsonl"
+    forecast_path = run_dir / "forecast_36h.jsonl"
+    targets_path = run_dir / "targets.jsonl"
+    sampling_plan_path = run_dir / "sampling_plan.jsonl"
+    weather_adapter_log_path = run_dir / "weather_adapter_log.jsonl"
 
     assert state_path.exists()
     assert anomaly_path.exists()
@@ -54,6 +58,10 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     assert actions_path.exists()
     assert guardrail_results_path.exists()
     assert executor_log_path.exists()
+    assert forecast_path.exists()
+    assert targets_path.exists()
+    assert sampling_plan_path.exists()
+    assert weather_adapter_log_path.exists()
     assert len(_read_lines(state_path)) >= 1
 
     action_records = _load_jsonl(actions_path)
@@ -70,6 +78,15 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     for record in executor_records:
         assert record["schema_version"] == "executor_event_v1"
         assert record["status"] in {"executed", "skipped"}
+
+    for record in _load_jsonl(forecast_path):
+        assert record["schema_version"] == "forecast_36h_v1"
+    for record in _load_jsonl(targets_path):
+        assert record["schema_version"] == "targets_v1"
+    for record in _load_jsonl(sampling_plan_path):
+        assert record["schema_version"] == "sampling_plan_v1"
+    for record in _load_jsonl(weather_adapter_log_path):
+        assert record["schema_version"] == "weather_adapter_log_v1"
 
 def test_time_scale_does_not_change_logical_count(tmp_path):
     out_a = tmp_path / "a"

@@ -302,3 +302,24 @@ Scope note:
 
 * Stage 2 intentionally emits only `ActionType.WATER`.
 * `light`, `fan`, `co2`, and `circulate` control policies are deferred to later stages.
+
+## Stage 3 Runtime Status
+
+Current Stage 3 simulation baseline in `scripts/simulate_day.py` also includes:
+
+* Deterministic 36h normalized forecast stream (`Forecast36hV1`)
+* Deterministic weather-adapter targets stream (`TargetsV1`)
+* Deterministic weather-adapter sampling plan stream (`SamplingPlanV1`)
+* Deterministic weather-adapter decision log stream (`WeatherAdapterLogV1`)
+
+Additional Stage 3 artifacts per run:
+
+* `forecast_36h.jsonl`
+* `targets.jsonl`
+* `sampling_plan.jsonl`
+* `weather_adapter_log.jsonl`
+
+Scope note:
+
+* Forecast input is a deterministic simulation stub (no live API key path in runtime).
+* Non-water action policies and hardware actuator execution remain deferred.
