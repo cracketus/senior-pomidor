@@ -10,6 +10,10 @@ This snapshot covers what is implemented and test-verified in the `senior-pomido
 - Stage 2 water-only control proposals persisted to `actions.jsonl`.
 - Stage 2 guardrails runtime validation persisted to `guardrail_results.jsonl`.
 - Stage 2 mock executor events persisted to `executor_log.jsonl`.
+- Stage 3 deterministic normalized forecast stream persisted to `forecast_36h.jsonl`.
+- Stage 3 deterministic weather-adapter targets persisted to `targets.jsonl`.
+- Stage 3 deterministic weather-adapter sampling plan persisted to `sampling_plan.jsonl`.
+- Stage 3 deterministic weather-adapter decision logs persisted to `weather_adapter_log.jsonl`.
 - JSONL persistence with append, basic rotation helpers, and public subset export.
 - End-to-end simulation orchestration via `scripts/simulate_day.py`.
 - Flat `StateV1` to weather-adapter nested input mapping utility for Stage 3 schema alignment.
@@ -36,6 +40,10 @@ python scripts/generate_playground_demo_fixtures.py
   - `actions.jsonl`
   - `guardrail_results.jsonl`
   - `executor_log.jsonl`
+  - `forecast_36h.jsonl`
+  - `targets.jsonl`
+  - `sampling_plan.jsonl`
+  - `weather_adapter_log.jsonl`
   - `manifest.json`
 
 ## Demo Story (Baseline vs Heatwave)
@@ -56,7 +64,6 @@ Narrative sequence for investor walkthrough:
 
 ## Known Gaps
 - No runtime World Model forecasting agent yet.
-- No runtime Weather Adapter policy engine yet.
 - No non-water control policy runtime yet (`light`, `fan`, `co2`, `circulate`).
 - No hardware actuator dispatch runtime yet (simulation is log-only executor).
 - No Vision/LLM inference path.
@@ -68,11 +75,11 @@ Narrative sequence for investor walkthrough:
 - Real actuator execution and hardware closed-loop safety.
 - Forecast-driven autonomous planning (24-36h) in runtime.
 - Vision-based plant reasoning in runtime.
-- Real-time weather-adaptive runtime control.
+- Production-grade weather-adaptive runtime control across multiple actuator types.
 
 ## Next Milestones
 - Stage 2: baseline control policy + Guardrails v1 + mock executor.
-- Stage 3: weather client + weather adapter + forecast host model.
+- Stage 3: replace deterministic weather stub with provider-backed ingestion and expand host model uncertainty handling.
 - Stage 4: vision pipeline and explanation layer integration.
 - Playground repo implementation: read-only observability MVP (FastAPI + React strict mode) powered by Stage 1 artifacts.
 
@@ -98,3 +105,4 @@ Every major claim above maps to at least one implementation file and one passing
 | C8 | Stage 3 mapper bridge exists and validates | `brain/world_model/state_v1_weather_adapter_mapper.py` | `tests/world_model/test_state_v1_weather_adapter_mapper.py` |
 | C9 | Virtual clock and scheduler are implemented | `brain/clock/sim_clock.py` | `tests/scheduler/test_event_loop.py` |
 | C10 | Stage 2 guardrails + executor logs are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |
+| C11 | Stage 3 forecast/targets/sampling/adapter-log artifacts are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |

@@ -1,4 +1,4 @@
-"""Generate canonical Stage 2 playground demo fixtures for investor demos.
+"""Generate canonical Stage 3 playground demo fixtures for investor demos.
 
 This script creates two deterministic 24h runs:
 - baseline_seed42_24h (scenario=none)
@@ -34,6 +34,10 @@ ARTIFACT_FILES = [
     "actions.jsonl",
     "guardrail_results.jsonl",
     "executor_log.jsonl",
+    "forecast_36h.jsonl",
+    "targets.jsonl",
+    "sampling_plan.jsonl",
+    "weather_adapter_log.jsonl",
 ]
 
 
@@ -107,6 +111,10 @@ def _collect_metrics(run_dir: Path) -> dict[str, Any]:
         "action_records": _count_jsonl_records(run_dir / "actions.jsonl"),
         "guardrail_result_records": _count_jsonl_records(run_dir / "guardrail_results.jsonl"),
         "executor_event_records": _count_jsonl_records(run_dir / "executor_log.jsonl"),
+        "forecast_records": _count_jsonl_records(run_dir / "forecast_36h.jsonl"),
+        "targets_records": _count_jsonl_records(run_dir / "targets.jsonl"),
+        "sampling_plan_records": _count_jsonl_records(run_dir / "sampling_plan.jsonl"),
+        "weather_adapter_log_records": _count_jsonl_records(run_dir / "weather_adapter_log.jsonl"),
         "cadence_by_mode": cadence_by_mode,
         "interval_counts": interval_counts,
         "anomalies_by_severity": anomalies_by_severity,
@@ -212,7 +220,7 @@ def generate_fixtures(
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate deterministic Stage 2 demo fixtures for playground.",
+        description="Generate deterministic Stage 3 demo fixtures for playground.",
     )
     parser.add_argument(
         "--output-root",

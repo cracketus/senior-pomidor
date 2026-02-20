@@ -26,10 +26,13 @@ This file captures planned components and staged work that are not yet implement
 
 ## Stage 3 (Weather Integration)
 
-- Weather integration: `world_model/weather_client.py` + `forecast_36h_v1` normalization
-- Weather adapter: scenario logic + `targets_v1`, `sampling_plan_v1`, `weather_adapter_log_v1`
-- State schema alignment for weather adapter inputs (mapping from current StateV1)
-- World Model v1 (baseline forecast + uncertainty) as the host for forecast + adapter
+- Weather integration baseline implemented: `world_model/weather_client.py` + `forecast_36h_v1` normalization
+- Weather adapter baseline implemented: scenario logic + `targets_v1`, `sampling_plan_v1`, `weather_adapter_log_v1`
+- State schema alignment implemented for weather adapter inputs (mapping from current `StateV1`)
+- Stage 3 runtime artifact wiring implemented in simulation + fixture pipeline
+- Remaining Stage 3 expansion:
+  - Replace deterministic weather stub with live provider adapter path
+  - Add baseline world-model uncertainty host behavior beyond adapter routing
 
 ---
 

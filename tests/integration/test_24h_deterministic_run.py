@@ -10,10 +10,14 @@ from brain.contracts import (
     AnomalyV1,
     DeviceStatusV1,
     ExecutorEventV1,
+    Forecast36hV1,
     GuardrailResultV1,
     ObservationV1,
+    SamplingPlanV1,
     SensorHealthV1,
     StateV1,
+    TargetsV1,
+    WeatherAdapterLogV1,
 )
 
 
@@ -98,6 +102,14 @@ def test_24h_run_outputs_validate_against_contracts(tmp_path):
         GuardrailResultV1.model_validate(payload, strict=False)
     for payload in _load_jsonl(run_dir / "executor_log.jsonl"):
         ExecutorEventV1.model_validate(payload, strict=False)
+    for payload in _load_jsonl(run_dir / "forecast_36h.jsonl"):
+        Forecast36hV1.model_validate(payload, strict=False)
+    for payload in _load_jsonl(run_dir / "targets.jsonl"):
+        TargetsV1.model_validate(payload, strict=False)
+    for payload in _load_jsonl(run_dir / "sampling_plan.jsonl"):
+        SamplingPlanV1.model_validate(payload, strict=False)
+    for payload in _load_jsonl(run_dir / "weather_adapter_log.jsonl"):
+        WeatherAdapterLogV1.model_validate(payload, strict=False)
 
 def test_24h_run_is_deterministic_with_fixed_seed(tmp_path):
     out_a = tmp_path / "a"
@@ -132,6 +144,10 @@ def test_24h_run_jsonl_files_are_readable(tmp_path):
         "actions.jsonl",
         "guardrail_results.jsonl",
         "executor_log.jsonl",
+        "forecast_36h.jsonl",
+        "targets.jsonl",
+        "sampling_plan.jsonl",
+        "weather_adapter_log.jsonl",
     ]:
         path = run_dir / name
         for line in _read_lines(path):
@@ -159,6 +175,10 @@ def test_24h_run_all_artifacts_are_deterministic(tmp_path):
         "actions.jsonl",
         "guardrail_results.jsonl",
         "executor_log.jsonl",
+        "forecast_36h.jsonl",
+        "targets.jsonl",
+        "sampling_plan.jsonl",
+        "weather_adapter_log.jsonl",
     ]:
         left = (run_a / artifact).read_text(encoding="utf-8")
         right = (run_b / artifact).read_text(encoding="utf-8")
