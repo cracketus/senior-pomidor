@@ -10,8 +10,11 @@ from brain.contracts import (
     ExecutorEventV1,
     Forecast36hV1,
     GuardrailResultV1,
+    SamplingPlanV1,
     SensorHealthV1,
     StateV1,
+    TargetsV1,
+    WeatherAdapterLogV1,
 )
 
 
@@ -28,6 +31,9 @@ class TestJsonSchemaExport:
             GuardrailResultV1,
             ExecutorEventV1,
             Forecast36hV1,
+            TargetsV1,
+            SamplingPlanV1,
+            WeatherAdapterLogV1,
         ]
 
         for contract in contracts:
@@ -74,6 +80,9 @@ class TestJsonSchemaExport:
             GuardrailResultV1,
             ExecutorEventV1,
             Forecast36hV1,
+            TargetsV1,
+            SamplingPlanV1,
+            WeatherAdapterLogV1,
         ]:
             schema = contract.model_json_schema()
             json_str = json.dumps(schema)
