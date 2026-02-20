@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
@@ -17,11 +18,17 @@ from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
 from brain.storage.jsonl_writer import JSONLWriter
+from brain.world_model import (
+    WeatherAdapter,
+    WeatherClient,
+    map_state_v1_to_weather_adapter_input,
+)
 
 DEFAULT_STEP_SECONDS = 2 * 60 * 60
 EVENT_STEP_SECONDS = 15 * 60
 EVENT_WINDOW_SECONDS = 2 * 60 * 60
 SEEDED_START_TIME = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+FORECAST_HORIZON_HOURS = 36
 
 
 def _clamp(value: float, low: float, high: float) -> float:
@@ -100,6 +107,57 @@ def _is_high_severity(anomaly) -> bool:
     return severity in {"high", "critical"}
 
 
+def _build_stub_forecast_payload(
+    *,
+    now: datetime,
+    air_temp_c: float,
+    rh_pct: float,
+    scenario: str,
+) -> list[dict[str, float | str]]:
+    points: list[dict[str, float | str]] = []
+    scenario_temp_shift = {
+        "none": 0.0,
+        "heatwave": 6.0,
+        "dry_inflow": 3.0,
+        "wind_spike": 1.0,
+        "cold_spell": -8.0,
+    }.get(scenario, 0.0)
+    scenario_rh_shift = {
+        "none": 0.0,
+        "heatwave": -12.0,
+        "dry_inflow": -20.0,
+        "wind_spike": -6.0,
+        "cold_spell": 10.0,
+    }.get(scenario, 0.0)
+    scenario_wind_shift = {
+        "none": 0.0,
+        "heatwave": 0.5,
+        "dry_inflow": 1.2,
+        "wind_spike": 6.0,
+        "cold_spell": 1.0,
+    }.get(scenario, 0.0)
+
+    for hour in range(FORECAST_HORIZON_HOURS):
+        ts = now + timedelta(hours=hour)
+        phase = (ts.hour / 24.0) * 2.0 * math.pi
+        temp = air_temp_c + 2.5 * math.sin(phase) + scenario_temp_shift
+        rh = rh_pct - 8.0 * math.sin(phase) + scenario_rh_shift
+        wind = 2.0 + 0.8 * math.cos(phase) + scenario_wind_shift
+        cloud = 45.0 - 20.0 * math.sin(phase)
+        solar = max(0.0, 700.0 * max(0.0, math.sin(phase)))
+        points.append(
+            {
+                "timestamp": ts.isoformat(),
+                "ext_temp_c": round(_clamp(temp, -30.0, 55.0), 3),
+                "ext_rh_pct": round(_clamp(rh, 0.0, 100.0), 3),
+                "ext_wind_mps": round(_clamp(wind, 0.0, 35.0), 3),
+                "ext_cloud_cover_pct": round(_clamp(cloud, 0.0, 100.0), 3),
+                "ext_solar_wm2": round(_clamp(solar, 0.0, 1200.0), 3),
+            }
+        )
+    return points
+
+
 def run_simulation(args: argparse.Namespace) -> Path:
     if args.duration_hours <= 0:
         raise ValueError("duration-hours must be positive")
@@ -133,6 +191,10 @@ def run_simulation(args: argparse.Namespace) -> Path:
     actions_path = run_dir / "actions.jsonl"
     guardrail_results_path = run_dir / "guardrail_results.jsonl"
     executor_log_path = run_dir / "executor_log.jsonl"
+    forecast_path = run_dir / "forecast_36h.jsonl"
+    targets_path = run_dir / "targets.jsonl"
+    sampling_plan_path = run_dir / "sampling_plan.jsonl"
+    weather_adapter_log_path = run_dir / "weather_adapter_log.jsonl"
 
     _touch(anomalies_path)
     _touch(health_path)
@@ -140,6 +202,10 @@ def run_simulation(args: argparse.Namespace) -> Path:
     _touch(actions_path)
     _touch(guardrail_results_path)
     _touch(executor_log_path)
+    _touch(forecast_path)
+    _touch(targets_path)
+    _touch(sampling_plan_path)
+    _touch(weather_adapter_log_path)
 
     state_writer = JSONLWriter(str(state_path))
     anomaly_writer = JSONLWriter(str(anomalies_path))
@@ -149,11 +215,17 @@ def run_simulation(args: argparse.Namespace) -> Path:
     actions_writer = JSONLWriter(str(actions_path))
     guardrail_results_writer = JSONLWriter(str(guardrail_results_path))
     executor_log_writer = JSONLWriter(str(executor_log_path))
+    forecast_writer = JSONLWriter(str(forecast_path))
+    targets_writer = JSONLWriter(str(targets_path))
+    sampling_plan_writer = JSONLWriter(str(sampling_plan_path))
+    weather_adapter_log_writer = JSONLWriter(str(weather_adapter_log_path))
 
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
     guardrails = GuardrailsValidator()
     executor = MockExecutor()
+    weather_client = WeatherClient()
+    weather_adapter = WeatherAdapter()
 
     elapsed = 0
     event_mode_until: int | None = None
@@ -190,6 +262,33 @@ def run_simulation(args: argparse.Namespace) -> Path:
             anomaly_writer.append(anomaly.model_dump(mode="json"))
         for health in sensor_health:
             health_writer.append(health.model_dump(mode="json"))
+
+        raw_forecast = _build_stub_forecast_payload(
+            now=now,
+            air_temp_c=observation.air_temperature,
+            rh_pct=observation.air_humidity,
+            scenario=args.scenario,
+        )
+        forecast = weather_client.normalize(
+            raw_forecast,
+            source="simulate_day_stub",
+            timezone_name="UTC",
+            freq_minutes=60,
+            horizon_hours=FORECAST_HORIZON_HOURS,
+            generated_at=now,
+        )
+        weather_state = map_state_v1_to_weather_adapter_input(state)
+        weather_result = weather_adapter.apply(
+            forecast=forecast,
+            state=weather_state,
+            now=now,
+            forecast_ref="forecast_36h_v1:simulate_day_stub",
+            state_ref="state_v1",
+        )
+        forecast_writer.append(forecast.model_dump(mode="json"))
+        targets_writer.append(weather_result.targets.model_dump(mode="json"))
+        sampling_plan_writer.append(weather_result.sampling_plan.model_dump(mode="json"))
+        weather_adapter_log_writer.append(weather_result.log.model_dump(mode="json"))
 
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
         proposed_action = controller.propose_action(state, now=now)

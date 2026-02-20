@@ -13,7 +13,11 @@
     "cadence.jsonl",
     "actions.jsonl",
     "guardrail_results.jsonl",
-    "executor_log.jsonl"
+    "executor_log.jsonl",
+    "forecast_36h.jsonl",
+    "targets.jsonl",
+    "sampling_plan.jsonl",
+    "weather_adapter_log.jsonl"
   ],
   "file_hashes_sha256": {
     "state.jsonl": "358a6e9e049ddbfee9960baa0434dfe5625c9250531c957d0842d97f7ee91a85",
@@ -23,7 +27,11 @@
     "cadence.jsonl": "68944e3271e5f30da1dbcd09986ba7904381721e300063ad71f3dd791eb91523",
     "actions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "guardrail_results.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "executor_log.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "executor_log.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "forecast_36h.jsonl": "13e7730867d8cb6d40a007443a53297310bd95adc684947d213208ee5e37ab53",
+    "targets.jsonl": "e9a98b89562c7f59d5cab193dd3e45de03b4b37f0e34bbda9a386c9159816e81",
+    "sampling_plan.jsonl": "08fbb46348676332ed8574783b9d010417e50f51a80f222d315dd3b982660a12",
+    "weather_adapter_log.jsonl": "e3476d28745b99116c4b9bef36105554f0ba24649d44f93b12f0fd5229e1698a"
   },
   "metrics": {
     "state_records": 89,
@@ -34,6 +42,10 @@
     "action_records": 0,
     "guardrail_result_records": 0,
     "executor_event_records": 0,
+    "forecast_records": 89,
+    "targets_records": 89,
+    "sampling_plan_records": 89,
+    "weather_adapter_log_records": 89,
     "cadence_by_mode": {
       "baseline": 1,
       "event": 88
