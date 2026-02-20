@@ -8,8 +8,11 @@ from brain.contracts import (
     ExecutorEventV1,
     Forecast36hV1,
     GuardrailResultV1,
+    SamplingPlanV1,
     SensorHealthV1,
     StateV1,
+    TargetsV1,
+    WeatherAdapterLogV1,
 )
 
 
@@ -21,4 +24,7 @@ def test_all_contracts_are_importable():
     assert ExecutorEventV1 is not None
     assert Forecast36hV1 is not None
     assert GuardrailResultV1 is not None
+    assert TargetsV1 is not None
+    assert SamplingPlanV1 is not None
+    assert WeatherAdapterLogV1 is not None
     assert SensorHealthV1 is not None
