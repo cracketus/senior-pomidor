@@ -36,6 +36,17 @@ This file captures planned components and staged work that are not yet implement
 
 ---
 
+## Stage 4 (Vision Pipeline)
+
+- Vision contracts baseline implemented: `vision_input_v1`, `vision_v1`, `vision_explanation_v1`
+- Deterministic baseline vision analyzer implemented in `brain/vision/baseline_analyzer.py`
+- Stage 4 runtime artifact wiring implemented in simulation (`vision.jsonl`, `vision_explanations.jsonl`)
+- Remaining Stage 4 expansion:
+  - Integrate external VLM/LLM inference runtime
+  - Add temporal multi-frame reasoning and richer explanation provenance
+
+---
+
 ## Planned Agents (Not Yet Implemented)
 
 - World Model Agent
@@ -64,6 +75,7 @@ Implemented in Stage 2 (simulation baseline):
 - Simulation orchestration with deterministic replay and acceleration
 - Forecast ingestion + normalization pipeline (GeoSphere Austria)
 - Dynamic target/budget/sampling adaptation via Weather Adapter
+- Advisory vision assessment and explanation stream for operator-facing context
 
 ---
 
@@ -71,3 +83,4 @@ Implemented in Stage 2 (simulation baseline):
 
 - `brain/world_model/weather_client.py`
 - `brain/world_model/weather_adapter.py`
+- `brain/vision/baseline_analyzer.py`
