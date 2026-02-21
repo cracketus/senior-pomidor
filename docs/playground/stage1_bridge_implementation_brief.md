@@ -1,9 +1,10 @@
-# Stage 1 Playground Bridge Implementation Brief
+# Stage 1 Playground Bridge Implementation Brief (Legacy Baseline)
 
 ## Purpose
 Implement a separate `senior-pomidor-playground` repository that exposes Stage 1 data from this repository (`senior-pomidor`) through a read-only API and frontend.
 
-This brief is intentionally scoped to read-only bridge functionality only.
+This brief is intentionally scoped to Stage 1 read-only bridge functionality only.
+For the expanded Stage 6 read-only observability target, see `docs/playground/stage6_bridge_observability_brief.md`.
 
 ## Architecture
 - Engine producer: `senior-pomidor` (simulation + JSONL artifacts).

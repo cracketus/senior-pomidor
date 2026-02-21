@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "pipeline_current_v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "state",
+    "anomaly_summary",
+    "cadence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pipeline_current_v2"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "object",
+      "required": ["schema_version"],
+      "properties": {
+        "schema_version": { "const": "state_v1" }
+      },
+      "additionalProperties": true
+    },
+    "anomaly_summary": {
+      "type": "object",
+      "required": [
+        "total",
+        "high_or_critical",
+        "latest_timestamp"
+      ],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "high_or_critical": { "type": "integer", "minimum": 0 },
+        "latest_timestamp": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true
+    },
+    "cadence": {
+      "type": "object",
+      "required": ["mode", "interval_seconds"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["baseline", "event"]
+        },
+        "interval_seconds": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "latest_guardrail_result": {
+      "type": ["object", "null"],
+      "description": "Optional latest guardrail_result_v1 payload reference."
+    },
+    "latest_executor_event": {
+      "type": ["object", "null"],
+      "description": "Optional latest executor_event_v1 payload reference."
+    },
+    "latest_forecast": {
+      "type": ["object", "null"],
+      "description": "Optional latest forecast_36h_v1 payload reference."
+    },
+    "latest_vision": {
+      "type": ["object", "null"],
+      "description": "Optional latest vision_v1 payload reference."
+    },
+    "latest_vision_explanation": {
+      "type": ["object", "null"],
+      "description": "Optional latest vision_explanation_v1 payload reference."
+    }
+  },
+  "additionalProperties": false
+}
