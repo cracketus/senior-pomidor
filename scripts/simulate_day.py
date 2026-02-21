@@ -362,7 +362,10 @@ def run_simulation(args: argparse.Namespace) -> Path:
                 effective_action=effective_action,
                 guardrail_result=guardrail_result,
                 now=now,
+                device_status=device_status,
             )
+            for runtime_event in executor.drain_runtime_events():
+                executor_log_writer.append(runtime_event.model_dump(mode="json"))
             executor_log_writer.append(executor_event.model_dump(mode="json"))
             if effective_action is not None:
                 actions_writer.append(effective_action.model_dump(mode="json"))

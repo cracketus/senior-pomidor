@@ -388,9 +388,10 @@ The current Stage 5 foundation now includes:
 - deterministic hardware adapter abstraction (`brain/executor/hardware_adapter.py`)
 - deterministic production-intended scaffold adapter (`production_scaffold`)
 - deterministic hardware-stub execution path (`brain/executor/hardware_executor.py`)
+- deterministic executor state machine transitions (`nominal`, `degraded`, `faulted`, `safe_mode`)
+- persisted state transition events in `executor_log.jsonl`
 
 Deferred to later stages:
 
 - production hardware actuator drivers
-- device state machine and fault recovery policy
 - execution retries, idempotency keys, and telemetry acks

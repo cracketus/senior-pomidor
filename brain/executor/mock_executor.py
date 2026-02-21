@@ -4,13 +4,17 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from brain.contracts import ActionV1, ExecutorEventV1, GuardrailResultV1
+from brain.contracts import ActionV1, DeviceStatusV1, ExecutorEventV1, GuardrailResultV1
 from brain.contracts.executor_event_v1 import ExecutorStatus
 from brain.contracts.guardrail_result_v1 import GuardrailDecision
 
 
 class MockExecutor:
     """Record execution intent without affecting plant dynamics."""
+
+    def drain_runtime_events(self) -> list[ExecutorEventV1]:
+        """Mock executor emits no out-of-band runtime events."""
+        return []
 
     def execute(
         self,
@@ -19,6 +23,7 @@ class MockExecutor:
         effective_action: ActionV1 | None,
         guardrail_result: GuardrailResultV1,
         now: datetime,
+        device_status: DeviceStatusV1 | None = None,
     ) -> ExecutorEventV1:
         """Return execution event from proposal/guardrail outcome."""
         if effective_action is None:
