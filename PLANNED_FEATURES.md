@@ -53,6 +53,13 @@ This file captures planned components and staged work that are not yet implement
   - pluggable executor backend selection in `scripts/simulate_day.py`
   - hardware adapter abstraction in `brain/executor/hardware_adapter.py`
   - deterministic hardware stub executor path in `brain/executor/hardware_executor.py`
+- Stage 5 tracking issues opened:
+  - TOMATO-57: Stage 5 tracking - hardware execution reliability and actuator readiness
+  - TOMATO-58: Implement production-ready hardware actuator adapter boundary and driver selection
+  - TOMATO-59: Implement executor device state machine with fault and safe-mode transitions
+  - TOMATO-60: Add deterministic retry and backoff policy for hardware execution failures
+  - TOMATO-61: Implement execution idempotency keys and duplicate-dispatch prevention
+  - TOMATO-62: Integrate Stage 5 artifacts into fixtures, deterministic tests, and docs alignment
 - Remaining Stage 5 expansion:
   - production hardware adapter for actuator I/O
   - device state machine with fault and safe-mode transitions
