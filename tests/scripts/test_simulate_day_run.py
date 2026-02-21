@@ -226,3 +226,40 @@ def test_flaky_hardware_driver_emits_retry_events(tmp_path):
         record for record in records if (record.get("notes") or "").startswith("retry_scheduled:")
     ]
     assert retry_records, "expected deterministic retry scheduling events in executor_log.jsonl"
+
+
+def test_forced_idempotency_key_emits_duplicate_skip_events(tmp_path):
+    result = _run_simulate(
+        tmp_path,
+        [
+            "--duration-hours",
+            "8",
+            "--seed",
+            "42",
+            "--time-scale",
+            "1000000",
+            "--executor-backend",
+            "hardware",
+            "--hardware-driver",
+            "flaky_stub",
+            "--force-water-action",
+            "--force-idempotency-key",
+            "stage5-runtime-idem",
+        ],
+    )
+    assert result.returncode == 0
+
+    run_dir = _find_run_dir(tmp_path)
+    records = _load_jsonl(run_dir / "executor_log.jsonl")
+    assert any(
+        (record.get("notes") or "").startswith("idempotency_stored:key=stage5-runtime-idem")
+        for record in records
+    )
+    assert any(
+        (record.get("notes") or "").startswith("idempotency_hit:key=stage5-runtime-idem")
+        for record in records
+    )
+    assert any(
+        record.get("notes") == "skipped_duplicate_idempotency_key:stage5-runtime-idem"
+        for record in records
+    )

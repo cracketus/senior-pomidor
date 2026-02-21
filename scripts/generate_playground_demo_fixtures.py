@@ -1,4 +1,4 @@
-"""Generate canonical Stage 4 playground demo fixtures for investor demos.
+"""Generate canonical Stage 5 playground demo fixtures for investor demos.
 
 This script creates two deterministic 24h runs:
 - baseline_seed42_24h (scenario=none)
@@ -23,7 +23,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from simulate_day import run_simulation
+from simulate_day import run_simulation  # noqa: E402
 
 ARTIFACT_FILES = [
     "state.jsonl",
@@ -180,6 +180,10 @@ def _run_single_fixture(
         duration_hours=duration_hours,
         time_scale=time_scale,
         scenario=fixture.scenario,
+        executor_backend="hardware",
+        hardware_driver="flaky_stub",
+        force_water_action=True,
+        force_idempotency_key="fixture-idem-stage5",
         verbose=False,
     )
     run_dir = run_simulation(args)
@@ -224,7 +228,7 @@ def generate_fixtures(
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate deterministic Stage 4 demo fixtures for playground.",
+        description="Generate deterministic Stage 5 demo fixtures for playground.",
     )
     parser.add_argument(
         "--output-root",

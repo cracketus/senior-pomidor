@@ -26,6 +26,7 @@ def test_help_contains_required_arguments(tmp_path):
         "--executor-backend",
         "--hardware-driver",
         "--force-water-action",
+        "--force-idempotency-key",
         "--verbose",
     ]:
         assert flag in result.stdout

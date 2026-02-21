@@ -1,4 +1,4 @@
-# Playground Demo Fixtures (Stage 4)
+# Playground Demo Fixtures (Stage 5)
 
 These fixtures are canonical deterministic runs for investor/demo playback.
 
@@ -33,3 +33,9 @@ python scripts/generate_playground_demo_fixtures.py
 Expected behavior:
 - fixture directories are recreated deterministically
 - artifact files remain byte-identical for identical seed/scenario/config
+- `executor_log.jsonl` includes Stage 5 runtime signals:
+  - `state_transition:*`
+  - `retry_scheduled:*`
+  - `idempotency_stored:*`
+  - `idempotency_hit:*`
+  - `skipped_duplicate_idempotency_key:*`
