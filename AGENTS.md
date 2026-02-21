@@ -378,3 +378,17 @@ Deferred to later stages:
 - external VLM/LLM model inference runtime
 - multi-image temporal reasoning and production media pipelines
 - direct actuator authority from vision outputs
+
+## Stage 5 Runtime Note
+
+The current Stage 5 foundation now includes:
+
+- pluggable executor backend selection (`--executor-backend`) in `scripts/simulate_day.py`
+- deterministic hardware adapter abstraction (`brain/executor/hardware_adapter.py`)
+- deterministic hardware-stub execution path (`brain/executor/hardware_executor.py`)
+
+Deferred to later stages:
+
+- production hardware actuator drivers
+- device state machine and fault recovery policy
+- execution retries, idempotency keys, and telemetry acks

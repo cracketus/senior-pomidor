@@ -47,6 +47,19 @@ This file captures planned components and staged work that are not yet implement
 
 ---
 
+## Stage 5 (Hardware Execution Foundation)
+
+- Hardware execution foundation started:
+  - pluggable executor backend selection in `scripts/simulate_day.py`
+  - hardware adapter abstraction in `brain/executor/hardware_adapter.py`
+  - deterministic hardware stub executor path in `brain/executor/hardware_executor.py`
+- Remaining Stage 5 expansion:
+  - production hardware adapter for actuator I/O
+  - device state machine with fault and safe-mode transitions
+  - retry/backoff strategy and execution idempotency keys
+
+---
+
 ## Planned Agents (Not Yet Implemented)
 
 - World Model Agent

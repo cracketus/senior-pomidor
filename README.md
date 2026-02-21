@@ -342,3 +342,16 @@ Scope note:
 
 * Stage 4 currently uses a deterministic rule-based stub analyzer.
 * No external VLM/LLM runtime calls or GPU serving path are included yet.
+
+## Stage 5 Runtime Status
+
+Current Stage 5 foundation in `scripts/simulate_day.py` includes:
+
+* Pluggable executor backend selection via `--executor-backend`.
+* Deterministic hardware adapter abstraction (`HardwareStubAdapter`).
+* Deterministic hardware executor path (`HardwareExecutor`) for validated actions.
+
+Scope note:
+
+* `mock` remains default to preserve prior deterministic behavior.
+* `hardware_stub` is a no-op command routing stub, not a real actuator driver.
