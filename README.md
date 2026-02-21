@@ -228,6 +228,8 @@ The goal is to build an open embodied AI system that the community can inspect a
 - `docs/error_handling.md`
 - `docs/state_v1_weather_adapter_mapping.md`
 - `docs/codex_prompting_playbook.md`
+- `docs/how_to_create_issue.md` (issue naming, labels, and body structure)
+- GitHub Issue Forms in `.github/ISSUE_TEMPLATE/` (`TOMATO Work Item`, `Enhancement Request`)
 
 ---
 

@@ -1,0 +1,69 @@
+﻿name: Enhancement Request
+description: Create a non-roadmap enhancement issue.
+title: "Enhancement: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for non-TOMATO improvements.
+
+        If this belongs to roadmap execution, use **TOMATO Work Item** instead.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Why
+      description: Why this enhancement is needed.
+      placeholder: Current limitation and expected impact.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What will be included.
+      placeholder: |
+        - Deliverable 1
+        - Deliverable 2
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: What is intentionally out of scope.
+      placeholder: |
+        - Out of scope 1
+        - Out of scope 2
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      value: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+    validations:
+      required: true
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Suggested Deliverables
+      description: Files/docs/modules expected from this work.
+      placeholder: |
+        - `docs/...`
+        - `scripts/...`
+        - `tests/...`
+    validations:
+      required: false
+  - type: checkboxes
+    id: final_checks
+    attributes:
+      label: Final Checks
+      options:
+        - label: Title follows `Enhancement: ...` format.
+          required: true
+        - label: This is not a TOMATO roadmap implementation issue.
+          required: true

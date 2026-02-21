@@ -1,0 +1,5 @@
+﻿blank_issues_enabled: false
+contact_links:
+  - name: Repository Instructions
+    url: https://github.com/cracketus/senior-pomidor/blob/main/INSTRUCTIONS.md
+    about: Read branch/commit/PR conventions before creating implementation issues.

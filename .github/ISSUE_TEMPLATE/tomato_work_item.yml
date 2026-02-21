@@ -1,0 +1,116 @@
+﻿name: TOMATO Work Item
+description: Create a roadmap issue using the repository's TOMATO format.
+title: "TOMATO-XX: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use title format: `TOMATO-{N}: {Clear action-oriented title}`.
+
+        Choose the correct stage label after creation if it is not selected in the form.
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue Type
+      description: Pick whether this is a standard implementation issue or a stage tracker.
+      options:
+        - Implementation issue
+        - Stage tracking issue
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      description: Select the stage label to apply.
+      options:
+        - stage 1
+        - stage 2
+        - stage 3
+        - stage 4
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / Why
+      description: Why this work is needed now.
+      placeholder: Explain problem, gap, or trigger.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: List concrete deliverables.
+      placeholder: |
+        - Deliverable 1
+        - Deliverable 2
+        - Deliverable 3
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: Explicitly list what is out of scope.
+      placeholder: |
+        - Not in this issue
+        - Deferred to later stage
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Use checkboxes with measurable outcomes.
+      value: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Required Tests
+      description: Include exact tests to add/update/run.
+      placeholder: |
+        - `tests/path/test_file.py::test_name`
+        - `tests/another_path/test_file.py`
+    validations:
+      required: true
+  - type: textarea
+    id: definition_of_done
+    attributes:
+      label: Definition of Done
+      description: Conditions required before closure/merge.
+      placeholder: |
+        - All acceptance criteria complete
+        - Required tests passing
+        - Docs aligned
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: List required predecessor issues, or `None`.
+      placeholder: |
+        - #53
+        - None
+    validations:
+      required: true
+  - type: checkboxes
+    id: final_checks
+    attributes:
+      label: Final Checks
+      options:
+        - label: Title follows `TOMATO-{N}: ...` format.
+          required: true
+        - label: Stage label selected and appropriate.
+          required: true
+        - label: Scope and non-goals do not overlap.
+          required: true

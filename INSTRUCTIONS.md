@@ -195,6 +195,45 @@ senior-pomidor/
 
 ---
 
+## Stage Kickoff Workflow (Starting a New Stage)
+
+Before implementing any issue in a new stage, follow this process.
+
+### Step 0: Check whether stage issues already exist
+
+Use GitHub CLI to confirm whether the stage already has open or closed issues:
+
+```bash
+gh issue list --state all --repo cracketus/senior-pomidor --search "stage 3"
+gh issue list --state all --repo cracketus/senior-pomidor --search "TOMATO-"
+```
+
+If stage issues already exist, continue with normal issue implementation workflow below.
+
+### Step 1: If no stage issues exist, define stage requirements first
+
+Before creating issues, write down:
+
+1. Stage goals and scope boundaries
+2. Acceptance criteria for the stage
+3. Non-goals (explicitly out of scope)
+
+Each planned issue for the stage must map to these requirements and acceptance criteria.
+
+### Step 2: Create stage issues (maximum 10)
+
+Create a focused issue set for the stage using the repository issue format:
+
+- Use `TOMATO-{N}: ...` naming
+- Apply the correct stage label (`stage 1`, `stage 2`, `stage 3`, `stage 4`, etc.)
+- Use structured body sections (`Context / Why`, `Scope`, `Non-goals`, `Acceptance Criteria`, `Required Tests`, `Dependencies`)
+
+Hard limit:
+
+- Do not create more than 10 issues for a single stage.
+
+If the stage is too large for 10 issues, split scope and defer remaining work to a later stage.
+
 ## Issue Implementation Workflow
 
 When implementing a GitHub issue, follow this workflow:
