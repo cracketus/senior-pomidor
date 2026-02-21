@@ -300,6 +300,8 @@ git push --force-with-lease origin TOMATO-1/bootstrap-repository
 ### Step 5: Verify and merge
 
 - Ensure all CI checks pass
+- Wait until all required PR checks are green and the PR reports no merge conflicts
+- If checks fail or merge conflicts appear, fix the branch and push updates to the same PR
 - Verify PR shows **exactly 1 commit** before merging
 - Review the PR description
 - Merge via GitHub UI or CLI:
@@ -487,8 +489,9 @@ Checklist:
 1. Push your feature branch
 2. Open a pull request against `main`
 3. Link related GitHub issues if applicable
-4. Ensure all CI checks pass
-5. Request review from team
+4. Wait until all CI checks are green and merge-conflict status is clean
+5. If checks fail or conflicts exist, fix the branch and update the same PR
+6. Request review from team
 
 ---
 
