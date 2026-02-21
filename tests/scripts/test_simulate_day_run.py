@@ -199,3 +199,30 @@ def test_hardware_backend_uses_selected_driver_in_executor_notes(tmp_path):
         record["notes"].startswith("executed_production_scaffold:")
         for record in executed
     )
+
+
+def test_flaky_hardware_driver_emits_retry_events(tmp_path):
+    result = _run_simulate(
+        tmp_path,
+        [
+            "--duration-hours",
+            "8",
+            "--seed",
+            "42",
+            "--time-scale",
+            "1000000",
+            "--executor-backend",
+            "hardware",
+            "--hardware-driver",
+            "flaky_stub",
+            "--force-water-action",
+        ],
+    )
+    assert result.returncode == 0
+
+    run_dir = _find_run_dir(tmp_path)
+    records = _load_jsonl(run_dir / "executor_log.jsonl")
+    retry_records = [
+        record for record in records if (record.get("notes") or "").startswith("retry_scheduled:")
+    ]
+    assert retry_records, "expected deterministic retry scheduling events in executor_log.jsonl"

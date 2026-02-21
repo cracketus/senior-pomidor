@@ -12,6 +12,7 @@ from brain.executor import (
     HardwareDispatchResult,
     HardwareExecutor,
     HardwareStubAdapter,
+    RetryPolicyConfig,
     create_hardware_adapter,
 )
 
@@ -141,7 +142,9 @@ def test_marks_event_skipped_when_adapter_rejects():
     )
 
     assert event.status == "skipped"
-    assert event.notes == "adapter_rejected:rejecting_adapter:REJECTED_CMD"
+    assert event.notes == (
+        "adapter_rejected_non_retryable:rejecting_adapter:REJECTED_CMD:unknown_error"
+    )
 
 
 def test_blocks_execution_when_telemetry_is_missing():
@@ -163,3 +166,86 @@ def test_blocks_execution_when_telemetry_is_missing():
     assert event.notes == "blocked_by_state:faulted"
     assert transitions
     assert transitions[0].notes == "state_transition:nominal->faulted:telemetry_missing"
+
+
+def test_retries_retryable_failure_then_executes():
+    class _FlakyThenSuccessAdapter:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        @property
+        def adapter_name(self) -> str:
+            return "flaky_then_success"
+
+        def dispatch(self, *, action: ActionV1, now: datetime) -> HardwareDispatchResult:
+            self.calls += 1
+            if self.calls == 1:
+                return HardwareDispatchResult(
+                    accepted=False,
+                    command="TEMP_FAIL",
+                    duration_seconds=action.duration_seconds,
+                    adapter_name=self.adapter_name,
+                    retryable=True,
+                    error_class="transient_io",
+                )
+            return HardwareDispatchResult(
+                accepted=True,
+                command="RECOVERED",
+                duration_seconds=action.duration_seconds,
+                adapter_name=self.adapter_name,
+            )
+
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    policy = RetryPolicyConfig(max_attempts=3, base_backoff_seconds=5.0)
+    executor = HardwareExecutor(_FlakyThenSuccessAdapter(), retry_policy=policy)
+    action = _action(now)
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+        device_status=_device_status(now),
+    )
+    runtime_events = executor.drain_runtime_events()
+
+    assert event.status == "executed"
+    assert event.notes == "executed_after_retry_flaky_then_success:RECOVERED:attempts=2"
+    assert any(
+        "retry_scheduled:adapter=flaky_then_success:attempt=2:" in e.notes
+        for e in runtime_events
+    )
+
+
+def test_non_retryable_failure_fails_fast_with_reason_code():
+    class _NonRetryableAdapter:
+        @property
+        def adapter_name(self) -> str:
+            return "non_retryable"
+
+        def dispatch(self, *, action: ActionV1, now: datetime) -> HardwareDispatchResult:
+            return HardwareDispatchResult(
+                accepted=False,
+                command="FATAL",
+                duration_seconds=action.duration_seconds,
+                adapter_name=self.adapter_name,
+                retryable=False,
+                error_class="fatal_config",
+            )
+
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(_NonRetryableAdapter())
+    action = _action(now)
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+        device_status=_device_status(now),
+    )
+
+    assert event.status == "skipped"
+    assert "non_retryable_dispatch" in event.reason_codes
+    assert event.notes == "adapter_rejected_non_retryable:non_retryable:FATAL:fatal_config"

@@ -11,7 +11,8 @@ from pathlib import Path
 from typing import Callable
 
 from brain.clock import SimClock
-from brain.contracts import VisionInputV1
+from brain.contracts import ActionV1, VisionInputV1
+from brain.contracts.action_v1 import ActionType
 from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
 from brain.executor import (
@@ -117,6 +118,11 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument(
+        "--force-water-action",
+        action="store_true",
+        help="Force deterministic water proposal each cycle (testing/runtime validation helper).",
+    )
     return parser.parse_args(argv)
 
 
@@ -348,6 +354,15 @@ def run_simulation(args: argparse.Namespace) -> Path:
 
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
         proposed_action = controller.propose_action(state, now=now)
+        if proposed_action is None and args.force_water_action:
+            proposed_action = ActionV1(
+                schema_version="action_v1",
+                timestamp=now,
+                action_type=ActionType.WATER,
+                duration_seconds=8.0,
+                intensity=0.7,
+                reason="forced_water_action_for_runtime_validation",
+            )
         if proposed_action is not None:
             effective_action, guardrail_result = guardrails.validate(
                 proposed_action,
