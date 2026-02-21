@@ -1,6 +1,6 @@
 ﻿# How to Create a GitHub Issue in `cracketus/senior-pomidor`
 
-This guide is based on patterns used in closed issues in this repository (for example: #10, #11, #12, #52, #53, #59, #67).
+This guide is based on patterns used in closed issues in this repository (for example: #10, #11, #12, #52, #53, #59, #67, #74).
 
 ## 1. Decide the issue type first
 
@@ -59,12 +59,13 @@ Observed labels in this repo:
 - `stage 2`
 - `stage 3`
 - `stage 4`
+- `stage 5`
 - `enhancement`
 - `duplicate` (only when closing as duplicate)
 
 Recommended labeling policy now:
 
-1. Roadmap implementation/tracking issues: add stage label (`stage 1`/`stage 2`/`stage 3`/`stage 4`).
+1. Roadmap implementation/tracking issues: add stage label (`stage 1`/`stage 2`/`stage 3`/`stage 4`/`stage 5`).
 2. Feature work: also add `enhancement`.
 3. Only use `duplicate` when the issue is truly a duplicate and will be closed quickly.
 
@@ -177,9 +178,9 @@ Preferred approach: create from a body file.
 
 ```powershell
 gh issue create --repo cracketus/senior-pomidor `
-  --title "TOMATO-57: <your title>" `
+  --title "TOMATO-76: <your title>" `
   --label "enhancement" `
-  --label "stage 4" `
+  --label "stage 5" `
   --body-file .github/ISSUE_BODY.md
 ```
 

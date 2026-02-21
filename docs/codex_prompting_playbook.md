@@ -84,6 +84,7 @@ PR must include:
 - What changed and why (short bullets)
 - Test command(s) run and pass/fail counts
 - "Closes #{N}" in body
+After PR creation, wait until checks are green and merge conflicts are clear; if not, fix and update the PR.
 If branch stacking causes base mismatch, restack onto main cleanly and recreate PR.
 ```
 
@@ -122,5 +123,6 @@ Before finishing, ensure:
 - Work maps to issue scope and acceptance criteria.
 - Relevant tests are executed or explicit blockers are reported.
 - Branch is pushed and PR is linked (if requested or part of workflow).
+- PR checks are green and there are no merge conflicts; otherwise fixes are pushed.
 - Summary references changed files and verification outcomes.
 

@@ -3,7 +3,7 @@
 ## Purpose
 Implement a separate `senior-pomidor-playground` repository that exposes Stage 1 data from this repository (`senior-pomidor`) through a read-only API and frontend.
 
-This brief is intentionally scoped to currently implemented functionality only.
+This brief is intentionally scoped to read-only bridge functionality only.
 
 ## Architecture
 - Engine producer: `senior-pomidor` (simulation + JSONL artifacts).
@@ -19,7 +19,7 @@ This brief is intentionally scoped to currently implemented functionality only.
 - `GET /api/logs/anomalies`
 - `GET /api/logs/sensor_health`
 - `GET /api/logs/cadence`
-- `GET /api/logs/actions` (returns empty list + `unsupported_in_stage1=true`)
+- `GET /api/logs/actions` (reads `actions.jsonl` when present)
 - `GET /api/logs/export_public`
 
 ## API Contract Files
@@ -61,7 +61,10 @@ Expected per-run files:
 - `sensor_health.jsonl`
 - `observations.jsonl`
 - `cadence.jsonl`
+- `actions.jsonl` (optional in older runs; present in current canonical fixtures)
 - `manifest.json`
+
+Additional artifacts may be present in current canonical fixtures (for example Stage 3-5 weather/vision/executor streams). The Stage 1 bridge should ignore unknown artifacts unless and until explicit API contracts are added.
 
 ## Acceptance Scenarios (Bridge Repo)
 - Endpoint payloads include declared `schema_version`.
