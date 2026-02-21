@@ -1,6 +1,6 @@
 """Tests for hardware-backed executor foundation."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from brain.contracts import ActionV1, DeviceStatusV1, GuardrailResultV1
 from brain.contracts.action_v1 import ActionType
@@ -12,6 +12,7 @@ from brain.executor import (
     HardwareDispatchResult,
     HardwareExecutor,
     HardwareStubAdapter,
+    IdempotencyConfig,
     RetryPolicyConfig,
     create_hardware_adapter,
 )
@@ -249,3 +250,33 @@ def test_non_retryable_failure_fails_fast_with_reason_code():
     assert event.status == "skipped"
     assert "non_retryable_dispatch" in event.reason_codes
     assert event.notes == "adapter_rejected_non_retryable:non_retryable:FATAL:fatal_config"
+
+
+def test_duplicate_idempotency_key_is_skipped():
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(
+        HardwareStubAdapter(),
+        idempotency=IdempotencyConfig(ttl_seconds=3600),
+    )
+    action = _action(now).model_copy(update={"idempotency_key": "idem-key-9999"})
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+
+    first = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+        device_status=_device_status(now),
+    )
+    _ = executor.drain_runtime_events()
+    second = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now + timedelta(minutes=1),
+        device_status=_device_status(now + timedelta(minutes=1)),
+    )
+
+    assert first.status == "executed"
+    assert second.status == "skipped"
+    assert second.notes == "skipped_duplicate_idempotency_key:idem-key-9999"

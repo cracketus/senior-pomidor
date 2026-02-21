@@ -17,6 +17,7 @@ from .hardware_state_machine import (
     StateMachineConfig,
     StateTransition,
 )
+from .idempotency import IdempotencyConfig
 from .mock_executor import MockExecutor
 from .retry_policy import RetryPolicyConfig
 
@@ -31,6 +32,7 @@ __all__ = [
     "StateTransition",
     "HardwareStubAdapter",
     "MockExecutor",
+    "IdempotencyConfig",
     "available_hardware_adapters",
     "create_hardware_adapter",
     "get_hardware_adapter_factory",

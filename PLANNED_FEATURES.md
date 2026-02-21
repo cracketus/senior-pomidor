@@ -56,6 +56,7 @@ This file captures planned components and staged work that are not yet implement
   - deterministic hardware stub executor path in `brain/executor/hardware_executor.py`
   - deterministic executor runtime state machine in `brain/executor/hardware_state_machine.py`
   - deterministic retry/backoff policy in `brain/executor/retry_policy.py`
+  - deterministic idempotency-key deduplication in `brain/executor/hardware_executor.py`
 - Stage 5 tracking issues opened:
   - TOMATO-57: Stage 5 tracking - hardware execution reliability and actuator readiness
   - TOMATO-58: Implement production-ready hardware actuator adapter boundary and driver selection
@@ -65,7 +66,6 @@ This file captures planned components and staged work that are not yet implement
   - TOMATO-62: Integrate Stage 5 artifacts into fixtures, deterministic tests, and docs alignment
 - Remaining Stage 5 expansion:
   - production hardware adapter for actuator I/O
-  - execution idempotency keys
 
 ---
 

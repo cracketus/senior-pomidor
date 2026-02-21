@@ -355,6 +355,7 @@ Current Stage 5 foundation in `scripts/simulate_day.py` includes:
 * Deterministic hardware executor path (`HardwareExecutor`) for validated actions.
 * Deterministic executor runtime state machine (`nominal`, `degraded`, `faulted`, `safe_mode`) with transition events in `executor_log.jsonl`.
 * Deterministic retry/backoff policy for retryable adapter failures with retry scheduling events in `executor_log.jsonl`.
+* Deterministic idempotency-key deduplication and duplicate-dispatch skip events in `executor_log.jsonl`.
 
 Scope note:
 

@@ -102,6 +102,15 @@ class ActionV1(BaseModel):
         default=None,
         description="Optional notes or warnings about this action.",
     )
+    idempotency_key: Optional[str] = Field(
+        default=None,
+        min_length=8,
+        max_length=128,
+        description=(
+            "Optional deduplication key for execution requests. "
+            "Repeated dispatch with the same key can be safely skipped."
+        ),
+    )
 
     @field_validator("timestamp")
     @classmethod

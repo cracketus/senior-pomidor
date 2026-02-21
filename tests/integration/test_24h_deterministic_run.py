@@ -3,7 +3,7 @@
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from brain.contracts import (
@@ -24,7 +24,7 @@ from brain.contracts import (
 )
 from brain.contracts.action_v1 import ActionType
 from brain.contracts.guardrail_result_v1 import GuardrailDecision
-from brain.executor import HardwareExecutor, HardwareStubAdapter
+from brain.executor import HardwareExecutor, HardwareStubAdapter, IdempotencyConfig
 
 
 def _run_simulate(
@@ -251,4 +251,62 @@ def test_executor_state_transition_events_validate_contracts():
     assert event.notes == "blocked_by_state:faulted"
     assert transitions
     for payload in [item.model_dump(mode="json") for item in transitions]:
+        ExecutorEventV1.model_validate(payload, strict=False)
+
+
+def test_executor_idempotency_events_validate_contracts():
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(
+        HardwareStubAdapter(),
+        idempotency=IdempotencyConfig(ttl_seconds=60 * 60),
+    )
+    action = ActionV1(
+        schema_version="action_v1",
+        timestamp=now,
+        action_type=ActionType.WATER,
+        duration_seconds=5.0,
+        intensity=0.5,
+        reason="integration_test",
+        idempotency_key="integration-idem-0001",
+    )
+    guardrail = GuardrailResultV1(
+        schema_version="guardrail_result_v1",
+        timestamp=now,
+        decision=GuardrailDecision.APPROVED,
+        reason_codes=[],
+    )
+    device = DeviceStatusV1(
+        schema_version="device_status_v1",
+        timestamp=now,
+        light_on=False,
+        fans_on=True,
+        heater_on=False,
+        pump_on=False,
+        co2_on=False,
+        mcu_connected=True,
+        mcu_uptime_seconds=100,
+        mcu_reset_count=0,
+    )
+
+    first = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=guardrail,
+        now=now,
+        device_status=device,
+    )
+    _ = executor.drain_runtime_events()
+    second = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=guardrail,
+        now=now + timedelta(minutes=1),
+        device_status=device.model_copy(update={"timestamp": now + timedelta(minutes=1)}),
+    )
+    runtime = executor.drain_runtime_events()
+
+    assert first.status == "executed"
+    assert second.status == "skipped"
+    assert "idempotency_duplicate" in second.reason_codes
+    for payload in [item.model_dump(mode="json") for item in runtime]:
         ExecutorEventV1.model_validate(payload, strict=False)
