@@ -1,4 +1,4 @@
-# Playground Demo Fixtures (Stage 3)
+# Playground Demo Fixtures (Stage 4)
 
 These fixtures are canonical deterministic runs for investor/demo playback.
 
@@ -19,6 +19,8 @@ Each fixture contains:
 - `targets.jsonl`
 - `sampling_plan.jsonl`
 - `weather_adapter_log.jsonl`
+- `vision.jsonl`
+- `vision_explanations.jsonl`
 - `manifest.json` (hashes + summary metrics)
 
 ## Regeneration

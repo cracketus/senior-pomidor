@@ -14,6 +14,8 @@ This snapshot covers what is implemented and test-verified in the `senior-pomido
 - Stage 3 deterministic weather-adapter targets persisted to `targets.jsonl`.
 - Stage 3 deterministic weather-adapter sampling plan persisted to `sampling_plan.jsonl`.
 - Stage 3 deterministic weather-adapter decision logs persisted to `weather_adapter_log.jsonl`.
+- Stage 4 deterministic vision assessments persisted to `vision.jsonl`.
+- Stage 4 deterministic vision explanations persisted to `vision_explanations.jsonl`.
 - JSONL persistence with append, basic rotation helpers, and public subset export.
 - End-to-end simulation orchestration via `scripts/simulate_day.py`.
 - Flat `StateV1` to weather-adapter nested input mapping utility for Stage 3 schema alignment.
@@ -44,6 +46,8 @@ python scripts/generate_playground_demo_fixtures.py
   - `targets.jsonl`
   - `sampling_plan.jsonl`
   - `weather_adapter_log.jsonl`
+  - `vision.jsonl`
+  - `vision_explanations.jsonl`
   - `manifest.json`
 
 ## Demo Story (Baseline vs Heatwave)
@@ -66,7 +70,7 @@ Narrative sequence for investor walkthrough:
 - No runtime World Model forecasting agent yet.
 - No non-water control policy runtime yet (`light`, `fan`, `co2`, `circulate`).
 - No hardware actuator dispatch runtime yet (simulation is log-only executor).
-- No Vision/LLM inference path.
+- No external Vision/LLM inference path.
 - No real hardware control loop.
 - No live weather API integration.
 
@@ -74,13 +78,13 @@ Narrative sequence for investor walkthrough:
 - Autonomous control decisions in production.
 - Real actuator execution and hardware closed-loop safety.
 - Forecast-driven autonomous planning (24-36h) in runtime.
-- Vision-based plant reasoning in runtime.
+- Production-grade vision-based plant reasoning in runtime.
 - Production-grade weather-adaptive runtime control across multiple actuator types.
 
 ## Next Milestones
 - Stage 2: baseline control policy + Guardrails v1 + mock executor.
 - Stage 3: replace deterministic weather stub with provider-backed ingestion and expand host model uncertainty handling.
-- Stage 4: vision pipeline and explanation layer integration.
+- Stage 4: replace deterministic vision stub with external VLM path and temporal reasoning.
 - Playground repo implementation: read-only observability MVP (FastAPI + React strict mode) powered by Stage 1 artifacts.
 
 ## Risk Controls
@@ -106,3 +110,4 @@ Every major claim above maps to at least one implementation file and one passing
 | C9 | Virtual clock and scheduler are implemented | `brain/clock/sim_clock.py` | `tests/scheduler/test_event_loop.py` |
 | C10 | Stage 2 guardrails + executor logs are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |
 | C11 | Stage 3 forecast/targets/sampling/adapter-log artifacts are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |
+| C12 | Stage 4 vision/explanation artifacts are emitted and deterministic | `scripts/simulate_day.py` | `tests/integration/test_24h_deterministic_run.py` |

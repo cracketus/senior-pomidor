@@ -364,3 +364,17 @@ Deferred to later stages:
 - live production weather API credentials/runtime secret handling
 - adaptive world-model learning and uncertainty calibration
 - production multi-actuator weather-adaptive control
+
+## Stage 4 Runtime Note
+
+The current Stage 4 simulation baseline now includes:
+
+- deterministic `vision.jsonl` advisory outputs (`VisionV1`)
+- deterministic `vision_explanations.jsonl` explanation outputs (`VisionExplanationV1`)
+- rule-based baseline analyzer wired into each simulation cycle
+
+Deferred to later stages:
+
+- external VLM/LLM model inference runtime
+- multi-image temporal reasoning and production media pipelines
+- direct actuator authority from vision outputs
