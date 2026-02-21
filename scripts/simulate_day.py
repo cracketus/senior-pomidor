@@ -123,6 +123,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help="Force deterministic water proposal each cycle (testing/runtime validation helper).",
     )
+    parser.add_argument(
+        "--force-idempotency-key",
+        type=str,
+        default=None,
+        help="When forcing actions, attach a constant idempotency key to exercise dedup behavior.",
+    )
     return parser.parse_args(argv)
 
 
@@ -355,6 +361,7 @@ def run_simulation(args: argparse.Namespace) -> Path:
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
         proposed_action = controller.propose_action(state, now=now)
         if proposed_action is None and getattr(args, "force_water_action", False):
+            forced_key = getattr(args, "force_idempotency_key", None)
             proposed_action = ActionV1(
                 schema_version="action_v1",
                 timestamp=now,
@@ -362,6 +369,7 @@ def run_simulation(args: argparse.Namespace) -> Path:
                 duration_seconds=8.0,
                 intensity=0.7,
                 reason="forced_water_action_for_runtime_validation",
+                idempotency_key=forced_key,
             )
         if proposed_action is not None:
             effective_action, guardrail_result = guardrails.validate(
