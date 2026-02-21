@@ -65,6 +65,15 @@ class TestSpecificationDocuments:
         assert "StateV1.soil_moisture_avg * 100" in content
         assert "brain/world_model/state_v1_weather_adapter_mapper.py" in content
 
+    def test_codex_prompting_playbook_exists_and_is_readable(self):
+        """Codex prompting playbook should exist with workflow templates."""
+        doc_path = Path("docs/codex_prompting_playbook.md")
+        assert doc_path.exists(), "docs/codex_prompting_playbook.md not found"
+        content = doc_path.read_text(encoding="utf-8")
+        assert "Codex Prompting Playbook" in content
+        assert "Reusable Prompt Templates" in content
+        assert "Ask-vs-Act Boundary" in content
+
     def test_agents_status_consistency(self):
         """AGENTS status blocks should match implemented Stage 1 components."""
         content = Path("AGENTS.md").read_text(encoding="utf-8")
@@ -102,6 +111,7 @@ class TestSpecificationDocuments:
             Path("docs/anomaly_thresholds.md"),
             Path("docs/error_handling.md"),
             Path("docs/state_v1_weather_adapter_mapping.md"),
+            Path("docs/codex_prompting_playbook.md"),
         ]
 
         for path in docs:

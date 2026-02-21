@@ -50,3 +50,4 @@ Current code implements contracts, observation sources, and storage. Estimator, 
 2. `AGENTS.md`
 3. `INSTRUCTIONS.md`
 4. `TECHNICAL_SPECIFICATION.md`
+5. `docs/codex_prompting_playbook.md`
