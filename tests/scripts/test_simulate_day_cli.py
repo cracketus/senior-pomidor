@@ -24,6 +24,7 @@ def test_help_contains_required_arguments(tmp_path):
         "--time-scale",
         "--scenario",
         "--executor-backend",
+        "--hardware-driver",
         "--verbose",
     ]:
         assert flag in result.stdout
@@ -66,6 +67,29 @@ def test_executor_backend_hardware_stub_is_valid(tmp_path):
             "none",
             "--executor-backend",
             "hardware_stub",
+        ],
+        cwd=Path.cwd(),
+    )
+    assert result.returncode == 0
+
+
+def test_executor_backend_hardware_with_production_scaffold_is_valid(tmp_path):
+    result = _run(
+        [
+            "--seed",
+            "123",
+            "--output-dir",
+            str(tmp_path),
+            "--duration-hours",
+            "2",
+            "--time-scale",
+            "1000000",
+            "--scenario",
+            "none",
+            "--executor-backend",
+            "hardware",
+            "--hardware-driver",
+            "production_scaffold",
         ],
         cwd=Path.cwd(),
     )

@@ -148,7 +148,16 @@ def test_fixed_seed_produces_reproducible_outputs(tmp_path):
 def test_event_driven_mode_increases_sampling_frequency(tmp_path):
     result = _run_simulate(
         tmp_path,
-        ["--duration-hours", "8", "--seed", "123", "--time-scale", "1000000", "--scenario", "heatwave"],
+        [
+            "--duration-hours",
+            "8",
+            "--seed",
+            "123",
+            "--time-scale",
+            "1000000",
+            "--scenario",
+            "heatwave",
+        ],
     )
     assert result.returncode == 0
 
@@ -163,3 +172,30 @@ def test_event_driven_mode_increases_sampling_frequency(tmp_path):
     assert "event" in modes
     assert 7200 in intervals
     assert 900 in intervals
+
+
+def test_hardware_backend_uses_selected_driver_in_executor_notes(tmp_path):
+    result = _run_simulate(
+        tmp_path,
+        [
+            "--duration-hours",
+            "2",
+            "--seed",
+            "123",
+            "--time-scale",
+            "1000000",
+            "--executor-backend",
+            "hardware",
+            "--hardware-driver",
+            "production_scaffold",
+        ],
+    )
+    assert result.returncode == 0
+
+    run_dir = _find_run_dir(tmp_path)
+    records = _load_jsonl(run_dir / "executor_log.jsonl")
+    executed = [record for record in records if record["status"] == "executed"]
+    assert all(
+        record["notes"].startswith("executed_production_scaffold:")
+        for record in executed
+    )

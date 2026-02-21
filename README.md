@@ -350,10 +350,12 @@ Scope note:
 Current Stage 5 foundation in `scripts/simulate_day.py` includes:
 
 * Pluggable executor backend selection via `--executor-backend`.
-* Deterministic hardware adapter abstraction (`HardwareStubAdapter`).
+* Hardware adapter registry/loader with driver selection via `--hardware-driver`.
+* Deterministic hardware adapters: `hardware_stub` and `production_scaffold`.
 * Deterministic hardware executor path (`HardwareExecutor`) for validated actions.
 
 Scope note:
 
 * `mock` remains default to preserve prior deterministic behavior.
 * `hardware_stub` is a no-op command routing stub, not a real actuator driver.
+* `production_scaffold` is a production-intended scaffold with explicit TODO boundaries for real actuator transport.

@@ -14,6 +14,8 @@ class HardwareExecutor:
     """Dispatch effective actions through a hardware adapter abstraction."""
 
     def __init__(self, adapter: HardwareAdapter) -> None:
+        if not getattr(adapter, "adapter_name", ""):
+            raise ValueError("adapter must define non-empty adapter_name")
         self._adapter = adapter
 
     def execute(
@@ -46,7 +48,10 @@ class HardwareExecutor:
                 guardrail_decision=guardrail_result.decision,
                 reason_codes=guardrail_result.reason_codes,
                 duration_seconds=None,
-                notes=f"adapter_rejected:{dispatch_result.command}",
+                notes=(
+                    "adapter_rejected:"
+                    f"{dispatch_result.adapter_name}:{dispatch_result.command}"
+                ),
             )
 
         clipped = guardrail_result.decision == GuardrailDecision.CLIPPED.value
@@ -59,8 +64,8 @@ class HardwareExecutor:
             reason_codes=guardrail_result.reason_codes,
             duration_seconds=dispatch_result.duration_seconds,
             notes=(
-                f"executed_hardware_stub_clipped:{dispatch_result.command}"
+                f"executed_{dispatch_result.adapter_name}_clipped:{dispatch_result.command}"
                 if clipped
-                else f"executed_hardware_stub:{dispatch_result.command}"
+                else f"executed_{dispatch_result.adapter_name}:{dispatch_result.command}"
             ),
         )

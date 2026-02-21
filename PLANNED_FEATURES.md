@@ -52,6 +52,7 @@ This file captures planned components and staged work that are not yet implement
 - Hardware execution foundation started:
   - pluggable executor backend selection in `scripts/simulate_day.py`
   - hardware adapter abstraction in `brain/executor/hardware_adapter.py`
+  - adapter registry/driver selection with deterministic `production_scaffold` adapter
   - deterministic hardware stub executor path in `brain/executor/hardware_executor.py`
 - Stage 5 tracking issues opened:
   - TOMATO-57: Stage 5 tracking - hardware execution reliability and actuator readiness

@@ -11,9 +11,15 @@ from pathlib import Path
 from typing import Callable
 
 from brain.clock import SimClock
+from brain.contracts import VisionInputV1
 from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
-from brain.executor import HardwareExecutor, HardwareStubAdapter, MockExecutor
+from brain.executor import (
+    HardwareExecutor,
+    MockExecutor,
+    available_hardware_adapters,
+    create_hardware_adapter,
+)
 from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
@@ -24,7 +30,6 @@ from brain.world_model import (
     WeatherClient,
     map_state_v1_to_weather_adapter_input,
 )
-from brain.contracts import VisionInputV1
 
 DEFAULT_STEP_SECONDS = 2 * 60 * 60
 EVENT_STEP_SECONDS = 15 * 60
@@ -95,8 +100,21 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         "--executor-backend",
         type=str,
         default="mock",
-        choices=["mock", "hardware_stub"],
-        help="Execution backend: mock (default) or hardware_stub (phase 5 foundation).",
+        choices=["mock", "hardware_stub", "hardware"],
+        help=(
+            "Execution backend: mock (default), hardware_stub (legacy deterministic), "
+            "or hardware (driver-selected)."
+        ),
+    )
+    parser.add_argument(
+        "--hardware-driver",
+        type=str,
+        default="hardware_stub",
+        choices=list(available_hardware_adapters()),
+        help=(
+            "Hardware adapter driver used when --executor-backend is hardware "
+            "(or hardware_stub for backward compatibility)."
+        ),
     )
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args(argv)
@@ -239,11 +257,12 @@ def run_simulation(args: argparse.Namespace) -> Path:
     controller = BaselineWaterController()
     guardrails = GuardrailsValidator()
     executor_backend = getattr(args, "executor_backend", "mock")
-    executor = (
-        MockExecutor()
-        if executor_backend == "mock"
-        else HardwareExecutor(HardwareStubAdapter())
-    )
+    if executor_backend == "mock":
+        executor = MockExecutor()
+    elif executor_backend == "hardware_stub":
+        executor = HardwareExecutor(create_hardware_adapter("hardware_stub"))
+    else:
+        executor = HardwareExecutor(create_hardware_adapter(args.hardware_driver))
     weather_client = WeatherClient()
     weather_adapter = WeatherAdapter()
     vision_analyzer = BaselineVisionAnalyzer()

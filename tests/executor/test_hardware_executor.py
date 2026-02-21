@@ -8,7 +8,12 @@ from brain.contracts.guardrail_result_v1 import (
     GuardrailDecision,
     GuardrailReasonCode,
 )
-from brain.executor import HardwareExecutor, HardwareStubAdapter
+from brain.executor import (
+    HardwareDispatchResult,
+    HardwareExecutor,
+    HardwareStubAdapter,
+    create_hardware_adapter,
+)
 
 
 def _action(now: datetime) -> ActionV1:
@@ -70,3 +75,51 @@ def test_skips_when_guardrails_reject():
 
     assert event.status == "skipped"
     assert "interval_violation" in event.reason_codes
+
+
+def test_executes_with_production_scaffold_adapter():
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(create_hardware_adapter("production_scaffold"))
+    action = _action(now)
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+    )
+
+    assert event.status == "executed"
+    assert event.notes == "executed_production_scaffold:ACTUATOR_WATER_PULSE"
+
+
+def test_marks_event_skipped_when_adapter_rejects():
+    class _RejectingAdapter:
+        @property
+        def adapter_name(self) -> str:
+            return "rejecting_adapter"
+
+        def dispatch(self, *, action: ActionV1, now: datetime) -> HardwareDispatchResult:
+            return HardwareDispatchResult(
+                accepted=False,
+                command="REJECTED_CMD",
+                duration_seconds=action.duration_seconds,
+                adapter_name=self.adapter_name,
+                details=now.isoformat(),
+            )
+
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(_RejectingAdapter())
+    action = _action(now)
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+    )
+
+    assert event.status == "skipped"
+    assert event.notes == "adapter_rejected:rejecting_adapter:REJECTED_CMD"
