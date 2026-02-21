@@ -3,6 +3,7 @@
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from brain.contracts import (
@@ -21,6 +22,9 @@ from brain.contracts import (
     VisionV1,
     WeatherAdapterLogV1,
 )
+from brain.contracts.action_v1 import ActionType
+from brain.contracts.guardrail_result_v1 import GuardrailDecision
+from brain.executor import HardwareExecutor, HardwareStubAdapter
 
 
 def _run_simulate(
@@ -214,3 +218,37 @@ def test_event_driven_window_is_deterministic(tmp_path):
 
     records = _load_jsonl(run_a / "cadence.jsonl")
     assert any(record["mode"] == "event" for record in records)
+
+
+def test_executor_state_transition_events_validate_contracts():
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(HardwareStubAdapter())
+    action = ActionV1(
+        schema_version="action_v1",
+        timestamp=now,
+        action_type=ActionType.WATER,
+        duration_seconds=5.0,
+        intensity=0.5,
+        reason="integration_test",
+    )
+    guardrail = GuardrailResultV1(
+        schema_version="guardrail_result_v1",
+        timestamp=now,
+        decision=GuardrailDecision.APPROVED,
+        reason_codes=[],
+    )
+
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=guardrail,
+        now=now,
+        device_status=None,
+    )
+    transitions = executor.drain_runtime_events()
+
+    assert event.status == "skipped"
+    assert event.notes == "blocked_by_state:faulted"
+    assert transitions
+    for payload in [item.model_dump(mode="json") for item in transitions]:
+        ExecutorEventV1.model_validate(payload, strict=False)

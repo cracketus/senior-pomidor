@@ -2,7 +2,7 @@
 
 from datetime import datetime, timezone
 
-from brain.contracts import ActionV1, GuardrailResultV1
+from brain.contracts import ActionV1, DeviceStatusV1, GuardrailResultV1
 from brain.contracts.action_v1 import ActionType
 from brain.contracts.guardrail_result_v1 import (
     GuardrailDecision,
@@ -42,6 +42,21 @@ def _guardrail(now: datetime, decision: GuardrailDecision) -> GuardrailResultV1:
     )
 
 
+def _device_status(now: datetime, *, connected: bool = True) -> DeviceStatusV1:
+    return DeviceStatusV1(
+        schema_version="device_status_v1",
+        timestamp=now,
+        light_on=False,
+        fans_on=True,
+        heater_on=False,
+        pump_on=False,
+        co2_on=False,
+        mcu_connected=connected,
+        mcu_uptime_seconds=1000,
+        mcu_reset_count=0,
+    )
+
+
 def test_executes_effective_action_via_adapter():
     now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
     executor = HardwareExecutor(HardwareStubAdapter())
@@ -53,6 +68,7 @@ def test_executes_effective_action_via_adapter():
         effective_action=action,
         guardrail_result=result,
         now=now,
+        device_status=_device_status(now),
     )
 
     assert event.status == "executed"
@@ -71,6 +87,7 @@ def test_skips_when_guardrails_reject():
         effective_action=None,
         guardrail_result=result,
         now=now,
+        device_status=_device_status(now),
     )
 
     assert event.status == "skipped"
@@ -88,6 +105,7 @@ def test_executes_with_production_scaffold_adapter():
         effective_action=action,
         guardrail_result=result,
         now=now,
+        device_status=_device_status(now),
     )
 
     assert event.status == "executed"
@@ -119,7 +137,29 @@ def test_marks_event_skipped_when_adapter_rejects():
         effective_action=action,
         guardrail_result=result,
         now=now,
+        device_status=_device_status(now),
     )
 
     assert event.status == "skipped"
     assert event.notes == "adapter_rejected:rejecting_adapter:REJECTED_CMD"
+
+
+def test_blocks_execution_when_telemetry_is_missing():
+    now = datetime(2026, 2, 15, 0, 0, tzinfo=timezone.utc)
+    executor = HardwareExecutor(HardwareStubAdapter())
+    action = _action(now)
+    result = _guardrail(now, GuardrailDecision.APPROVED)
+
+    event = executor.execute(
+        proposed_action=action,
+        effective_action=action,
+        guardrail_result=result,
+        now=now,
+        device_status=None,
+    )
+    transitions = executor.drain_runtime_events()
+
+    assert event.status == "skipped"
+    assert event.notes == "blocked_by_state:faulted"
+    assert transitions
+    assert transitions[0].notes == "state_transition:nominal->faulted:telemetry_missing"

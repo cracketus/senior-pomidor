@@ -353,6 +353,7 @@ Current Stage 5 foundation in `scripts/simulate_day.py` includes:
 * Hardware adapter registry/loader with driver selection via `--hardware-driver`.
 * Deterministic hardware adapters: `hardware_stub` and `production_scaffold`.
 * Deterministic hardware executor path (`HardwareExecutor`) for validated actions.
+* Deterministic executor runtime state machine (`nominal`, `degraded`, `faulted`, `safe_mode`) with transition events in `executor_log.jsonl`.
 
 Scope note:
 
