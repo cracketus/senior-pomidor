@@ -238,9 +238,10 @@ def run_simulation(args: argparse.Namespace) -> Path:
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
     guardrails = GuardrailsValidator()
+    executor_backend = getattr(args, "executor_backend", "mock")
     executor = (
         MockExecutor()
-        if args.executor_backend == "mock"
+        if executor_backend == "mock"
         else HardwareExecutor(HardwareStubAdapter())
     )
     weather_client = WeatherClient()
