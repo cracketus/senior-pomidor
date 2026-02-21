@@ -11,7 +11,6 @@ from scripts.generate_playground_demo_fixtures import (
     generate_fixtures,
 )
 
-
 FIXTURE_ROOT = Path("tests/fixtures/playground_demo_runs")
 
 
