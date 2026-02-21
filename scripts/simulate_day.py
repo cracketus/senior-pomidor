@@ -13,7 +13,7 @@ from typing import Callable
 from brain.clock import SimClock
 from brain.control import BaselineWaterController
 from brain.estimator import EstimatorPipeline
-from brain.executor import MockExecutor
+from brain.executor import HardwareExecutor, HardwareStubAdapter, MockExecutor
 from brain.guardrails import GuardrailsValidator
 from brain.sources import SyntheticConfig, SyntheticSource
 from brain.storage.dataset import DatasetManager
@@ -90,6 +90,13 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         type=str,
         default="none",
         choices=["none", "heatwave", "dry_inflow", "wind_spike", "cold_spell"],
+    )
+    parser.add_argument(
+        "--executor-backend",
+        type=str,
+        default="mock",
+        choices=["mock", "hardware_stub"],
+        help="Execution backend: mock (default) or hardware_stub (phase 5 foundation).",
     )
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args(argv)
@@ -231,7 +238,12 @@ def run_simulation(args: argparse.Namespace) -> Path:
     clock = SimClock(time_scale=1.0, start_time=start_time)
     controller = BaselineWaterController()
     guardrails = GuardrailsValidator()
-    executor = MockExecutor()
+    executor_backend = getattr(args, "executor_backend", "mock")
+    executor = (
+        MockExecutor()
+        if executor_backend == "mock"
+        else HardwareExecutor(HardwareStubAdapter())
+    )
     weather_client = WeatherClient()
     weather_adapter = WeatherAdapter()
     vision_analyzer = BaselineVisionAnalyzer()
