@@ -384,7 +384,9 @@ Deferred to later stages:
 The current Stage 5 foundation now includes:
 
 - pluggable executor backend selection (`--executor-backend`) in `scripts/simulate_day.py`
+- hardware adapter registry/loader and driver selection (`--hardware-driver`)
 - deterministic hardware adapter abstraction (`brain/executor/hardware_adapter.py`)
+- deterministic production-intended scaffold adapter (`production_scaffold`)
 - deterministic hardware-stub execution path (`brain/executor/hardware_executor.py`)
 
 Deferred to later stages:
