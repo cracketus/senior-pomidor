@@ -168,8 +168,6 @@ senior-pomidor/
 │   ├── anomaly_thresholds.md
 │   └── confidence_scoring.md
 ├── scripts/
-│   ├── create_github_issues.py
-│   └── export_issues_for_manual_creation.py
 ├── tests/                  # Test suite
 │   ├── contracts/
 │   ├── sources/

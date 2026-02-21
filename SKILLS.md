@@ -294,7 +294,6 @@ This keeps the codebase lean and the system trustworthy.
 - [AGENTS.md](AGENTS.md) — Agent architecture and data flow
 - [INSTRUCTIONS.md](INSTRUCTIONS.md) — Developer setup and workflow
 - [TECHNICAL_SPECIFICATION.md](TECHNICAL_SPECIFICATION.md) — Detailed design requirements
-- [MVP_GITHUB_ISSUES.md](MVP_GITHUB_ISSUES.md) — Component acceptance criteria for first iteration
 
 ---
 
@@ -304,4 +303,3 @@ This keeps the codebase lean and the system trustworthy.
 - **How does the system work?** → See [AGENTS.md](AGENTS.md)
 - **What are the technical details?** → See [TECHNICAL_SPECIFICATION.md](TECHNICAL_SPECIFICATION.md)
 - **What's the development roadmap?** → This file (SKILLS.md)
-- **What are the acceptance criteria for first iteration?** → See [MVP_GITHUB_ISSUES.md](MVP_GITHUB_ISSUES.md)
