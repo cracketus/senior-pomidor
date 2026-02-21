@@ -392,8 +392,10 @@ The current Stage 5 foundation now includes:
 - persisted state transition events in `executor_log.jsonl`
 - deterministic retry/backoff policy for retryable adapter failures
 - persisted retry scheduling events in `executor_log.jsonl`
+- deterministic idempotency-key deduplication in hardware executor flow
+- persisted idempotency tracking events in `executor_log.jsonl`
 
 Deferred to later stages:
 
 - production hardware actuator drivers
-- idempotency keys and telemetry acks
+- telemetry acks

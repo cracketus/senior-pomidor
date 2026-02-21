@@ -38,6 +38,16 @@ class TestActionV1Valid:
             )
             assert action.action_type == action_type.value
 
+    def test_idempotency_key_is_accepted_when_present(self):
+        action = ActionV1(
+            schema_version="action_v1",
+            timestamp=datetime.now(timezone.utc),
+            action_type=ActionType.WATER,
+            reason="Test action",
+            idempotency_key="idem-key-1234",
+        )
+        assert action.idempotency_key == "idem-key-1234"
+
 
 class TestActionV1Invalid:
     """Test invalid ActionV1 payloads."""
@@ -80,6 +90,16 @@ class TestActionV1Invalid:
                 timestamp=datetime.now(timezone.utc),
                 action_type=ActionType.WATER,
                 reason="Test",
+            )
+
+    def test_idempotency_key_too_short_fails(self):
+        with pytest.raises(ValidationError):
+            ActionV1(
+                schema_version="action_v1",
+                timestamp=datetime.now(timezone.utc),
+                action_type=ActionType.WATER,
+                reason="Test",
+                idempotency_key="short",
             )
 
 
