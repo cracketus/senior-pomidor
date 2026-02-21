@@ -354,7 +354,7 @@ def run_simulation(args: argparse.Namespace) -> Path:
 
         # Stage 2 scope: propose only WATER actions; other action types are deferred.
         proposed_action = controller.propose_action(state, now=now)
-        if proposed_action is None and args.force_water_action:
+        if proposed_action is None and getattr(args, "force_water_action", False):
             proposed_action = ActionV1(
                 schema_version="action_v1",
                 timestamp=now,
