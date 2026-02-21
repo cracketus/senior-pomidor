@@ -51,6 +51,8 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     targets_path = run_dir / "targets.jsonl"
     sampling_plan_path = run_dir / "sampling_plan.jsonl"
     weather_adapter_log_path = run_dir / "weather_adapter_log.jsonl"
+    vision_path = run_dir / "vision.jsonl"
+    vision_explanations_path = run_dir / "vision_explanations.jsonl"
 
     assert state_path.exists()
     assert anomaly_path.exists()
@@ -62,6 +64,8 @@ def test_generates_state_and_anomaly_logs(tmp_path):
     assert targets_path.exists()
     assert sampling_plan_path.exists()
     assert weather_adapter_log_path.exists()
+    assert vision_path.exists()
+    assert vision_explanations_path.exists()
     assert len(_read_lines(state_path)) >= 1
 
     action_records = _load_jsonl(actions_path)
@@ -87,6 +91,10 @@ def test_generates_state_and_anomaly_logs(tmp_path):
         assert record["schema_version"] == "sampling_plan_v1"
     for record in _load_jsonl(weather_adapter_log_path):
         assert record["schema_version"] == "weather_adapter_log_v1"
+    for record in _load_jsonl(vision_path):
+        assert record["schema_version"] == "vision_v1"
+    for record in _load_jsonl(vision_explanations_path):
+        assert record["schema_version"] == "vision_explanation_v1"
 
 def test_time_scale_does_not_change_logical_count(tmp_path):
     out_a = tmp_path / "a"
