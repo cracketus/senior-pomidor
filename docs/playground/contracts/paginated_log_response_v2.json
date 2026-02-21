@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "paginated_log_response_v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "log_type",
+    "items",
+    "pagination"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "paginated_log_response_v2"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "log_type": {
+      "type": "string",
+      "enum": [
+        "states",
+        "anomalies",
+        "sensor_health",
+        "cadence",
+        "actions",
+        "guardrail_results",
+        "executor_events",
+        "forecast_36h",
+        "targets",
+        "sampling_plan",
+        "weather_adapter",
+        "vision",
+        "vision_explanations"
+      ]
+    },
+    "unsupported_in_stage1": {
+      "type": "boolean"
+    },
+    "items": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "pagination": {
+      "type": "object",
+      "required": ["offset", "limit", "total"],
+      "properties": {
+        "offset": { "type": "integer", "minimum": 0 },
+        "limit": { "type": "integer", "minimum": 1 },
+        "total": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

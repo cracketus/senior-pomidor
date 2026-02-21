@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "capabilities_v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "capabilities_v2"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "read_only_mode",
+        "supports_actions_log",
+        "supports_runtime_control",
+        "supports_world_model",
+        "supports_guardrails_runtime",
+        "supports_vision_runtime",
+        "supports_guardrail_log",
+        "supports_executor_log",
+        "supports_weather_adapter_logs",
+        "supports_vision_logs"
+      ],
+      "properties": {
+        "read_only_mode": { "type": "boolean" },
+        "supports_actions_log": { "type": "boolean" },
+        "supports_runtime_control": { "type": "boolean" },
+        "supports_world_model": { "type": "boolean" },
+        "supports_guardrails_runtime": { "type": "boolean" },
+        "supports_vision_runtime": { "type": "boolean" },
+        "supports_guardrail_log": { "type": "boolean" },
+        "supports_executor_log": { "type": "boolean" },
+        "supports_weather_adapter_logs": { "type": "boolean" },
+        "supports_vision_logs": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
