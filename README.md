@@ -323,3 +323,21 @@ Scope note:
 
 * Forecast input is a deterministic simulation stub (no live API key path in runtime).
 * Non-water action policies and hardware actuator execution remain deferred.
+
+## Stage 4 Runtime Status
+
+Current Stage 4 simulation baseline in `scripts/simulate_day.py` also includes:
+
+* Deterministic baseline vision assessments (`VisionV1`)
+* Deterministic vision explanation records (`VisionExplanationV1`)
+* Advisory-only vision path (no direct action dispatch from vision output)
+
+Additional Stage 4 artifacts per run:
+
+* `vision.jsonl`
+* `vision_explanations.jsonl`
+
+Scope note:
+
+* Stage 4 currently uses a deterministic rule-based stub analyzer.
+* No external VLM/LLM runtime calls or GPU serving path are included yet.

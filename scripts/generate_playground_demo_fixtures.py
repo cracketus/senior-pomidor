@@ -1,4 +1,4 @@
-"""Generate canonical Stage 3 playground demo fixtures for investor demos.
+"""Generate canonical Stage 4 playground demo fixtures for investor demos.
 
 This script creates two deterministic 24h runs:
 - baseline_seed42_24h (scenario=none)
@@ -38,6 +38,8 @@ ARTIFACT_FILES = [
     "targets.jsonl",
     "sampling_plan.jsonl",
     "weather_adapter_log.jsonl",
+    "vision.jsonl",
+    "vision_explanations.jsonl",
 ]
 
 
@@ -115,6 +117,8 @@ def _collect_metrics(run_dir: Path) -> dict[str, Any]:
         "targets_records": _count_jsonl_records(run_dir / "targets.jsonl"),
         "sampling_plan_records": _count_jsonl_records(run_dir / "sampling_plan.jsonl"),
         "weather_adapter_log_records": _count_jsonl_records(run_dir / "weather_adapter_log.jsonl"),
+        "vision_records": _count_jsonl_records(run_dir / "vision.jsonl"),
+        "vision_explanation_records": _count_jsonl_records(run_dir / "vision_explanations.jsonl"),
         "cadence_by_mode": cadence_by_mode,
         "interval_counts": interval_counts,
         "anomalies_by_severity": anomalies_by_severity,
@@ -220,7 +224,7 @@ def generate_fixtures(
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate deterministic Stage 3 demo fixtures for playground.",
+        description="Generate deterministic Stage 4 demo fixtures for playground.",
     )
     parser.add_argument(
         "--output-root",

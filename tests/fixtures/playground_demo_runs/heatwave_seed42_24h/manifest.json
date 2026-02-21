@@ -17,7 +17,9 @@
     "forecast_36h.jsonl",
     "targets.jsonl",
     "sampling_plan.jsonl",
-    "weather_adapter_log.jsonl"
+    "weather_adapter_log.jsonl",
+    "vision.jsonl",
+    "vision_explanations.jsonl"
   ],
   "file_hashes_sha256": {
     "state.jsonl": "358a6e9e049ddbfee9960baa0434dfe5625c9250531c957d0842d97f7ee91a85",
@@ -31,7 +33,9 @@
     "forecast_36h.jsonl": "13e7730867d8cb6d40a007443a53297310bd95adc684947d213208ee5e37ab53",
     "targets.jsonl": "e9a98b89562c7f59d5cab193dd3e45de03b4b37f0e34bbda9a386c9159816e81",
     "sampling_plan.jsonl": "08fbb46348676332ed8574783b9d010417e50f51a80f222d315dd3b982660a12",
-    "weather_adapter_log.jsonl": "e3476d28745b99116c4b9bef36105554f0ba24649d44f93b12f0fd5229e1698a"
+    "weather_adapter_log.jsonl": "e3476d28745b99116c4b9bef36105554f0ba24649d44f93b12f0fd5229e1698a",
+    "vision.jsonl": "38c6efe3528aac3032cfe5274783ffca8a2f1f182e3a10d0085f523a35daf8be",
+    "vision_explanations.jsonl": "3c11b973a64ee27ef468804b8c8e40a3b1f1571a00d4b7c32a2f6687c4c36685"
   },
   "metrics": {
     "state_records": 89,
@@ -46,6 +50,8 @@
     "targets_records": 89,
     "sampling_plan_records": 89,
     "weather_adapter_log_records": 89,
+    "vision_records": 89,
+    "vision_explanation_records": 89,
     "cadence_by_mode": {
       "baseline": 1,
       "event": 88
