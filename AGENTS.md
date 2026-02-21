@@ -390,8 +390,10 @@ The current Stage 5 foundation now includes:
 - deterministic hardware-stub execution path (`brain/executor/hardware_executor.py`)
 - deterministic executor state machine transitions (`nominal`, `degraded`, `faulted`, `safe_mode`)
 - persisted state transition events in `executor_log.jsonl`
+- deterministic retry/backoff policy for retryable adapter failures
+- persisted retry scheduling events in `executor_log.jsonl`
 
 Deferred to later stages:
 
 - production hardware actuator drivers
-- execution retries, idempotency keys, and telemetry acks
+- idempotency keys and telemetry acks

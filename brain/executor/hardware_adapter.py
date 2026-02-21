@@ -18,6 +18,8 @@ class HardwareDispatchResult:
     command: str
     duration_seconds: float | None
     adapter_name: str
+    retryable: bool = False
+    error_class: str | None = None
     details: str | None = None
 
     def __post_init__(self) -> None:
@@ -27,6 +29,10 @@ class HardwareDispatchResult:
             raise ValueError("adapter_name must be non-empty")
         if self.duration_seconds is not None and self.duration_seconds < 0:
             raise ValueError("duration_seconds must be >= 0")
+        if self.accepted and self.retryable:
+            raise ValueError("accepted results cannot be retryable")
+        if self.accepted and self.error_class is not None:
+            raise ValueError("accepted results cannot include error_class")
 
 
 class HardwareAdapter(Protocol):
@@ -99,11 +105,43 @@ class ProductionScaffoldAdapter:
         )
 
 
+class FlakyStubAdapter:
+    """Deterministic flaky adapter used to exercise runtime retry behavior."""
+
+    def __init__(self) -> None:
+        self._dispatch_calls = 0
+
+    @property
+    def adapter_name(self) -> str:
+        return "flaky_stub"
+
+    def dispatch(self, *, action: ActionV1, now: datetime) -> HardwareDispatchResult:
+        self._dispatch_calls += 1
+        if self._dispatch_calls % 2 == 1:
+            return HardwareDispatchResult(
+                accepted=False,
+                command="TRANSIENT_IO",
+                duration_seconds=action.duration_seconds,
+                adapter_name=self.adapter_name,
+                retryable=True,
+                error_class="transient_io",
+                details=f"flaky_stub_transient_failure_at={now.isoformat()}",
+            )
+        return HardwareDispatchResult(
+            accepted=True,
+            command="FLAKY_RECOVERED_DISPATCH",
+            duration_seconds=action.duration_seconds,
+            adapter_name=self.adapter_name,
+            details=f"flaky_stub_recovered_at={now.isoformat()}",
+        )
+
+
 HardwareAdapterFactory = Callable[[], HardwareAdapter]
 
 _ADAPTER_FACTORIES: dict[str, HardwareAdapterFactory] = {
     "hardware_stub": HardwareStubAdapter,
     "production_scaffold": ProductionScaffoldAdapter,
+    "flaky_stub": FlakyStubAdapter,
 }
 
 

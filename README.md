@@ -354,9 +354,11 @@ Current Stage 5 foundation in `scripts/simulate_day.py` includes:
 * Deterministic hardware adapters: `hardware_stub` and `production_scaffold`.
 * Deterministic hardware executor path (`HardwareExecutor`) for validated actions.
 * Deterministic executor runtime state machine (`nominal`, `degraded`, `faulted`, `safe_mode`) with transition events in `executor_log.jsonl`.
+* Deterministic retry/backoff policy for retryable adapter failures with retry scheduling events in `executor_log.jsonl`.
 
 Scope note:
 
 * `mock` remains default to preserve prior deterministic behavior.
 * `hardware_stub` is a no-op command routing stub, not a real actuator driver.
 * `production_scaffold` is a production-intended scaffold with explicit TODO boundaries for real actuator transport.
+* `flaky_stub` is a deterministic test driver for retry/backoff runtime validation.

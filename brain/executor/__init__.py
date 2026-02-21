@@ -1,6 +1,7 @@
 """Executor implementations for simulation and hardware dispatch foundations."""
 
 from .hardware_adapter import (
+    FlakyStubAdapter,
     HardwareDispatchResult,
     HardwareStubAdapter,
     ProductionScaffoldAdapter,
@@ -17,11 +18,13 @@ from .hardware_state_machine import (
     StateTransition,
 )
 from .mock_executor import MockExecutor
+from .retry_policy import RetryPolicyConfig
 
 __all__ = [
     "HardwareDispatchResult",
     "HardwareExecutor",
     "ExecutorRuntimeState",
+    "FlakyStubAdapter",
     "HardwareExecutionStateMachine",
     "ProductionScaffoldAdapter",
     "StateMachineConfig",
@@ -32,4 +35,5 @@ __all__ = [
     "create_hardware_adapter",
     "get_hardware_adapter_factory",
     "register_hardware_adapter",
+    "RetryPolicyConfig",
 ]
