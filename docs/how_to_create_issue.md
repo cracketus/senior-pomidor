@@ -2,6 +2,15 @@
 
 This guide is based on patterns used in closed issues in this repository (for example: #10, #11, #12, #52, #53, #59, #67, #74).
 
+## Issue templates in this repository
+
+Use the template that matches the work:
+
+- `TOMATO Work Item` (`.github/ISSUE_TEMPLATE/tomato_work_item.yml`): roadmap implementation and stage tracking.
+- `Enhancement Request` (`.github/ISSUE_TEMPLATE/enhancement_request.yml`): non-roadmap enhancements.
+- `Bug report` (`.github/ISSUE_TEMPLATE/bug_report.md`): reproducible defects.
+- `Feature request` (`.github/ISSUE_TEMPLATE/feature_request.md`): general feature proposals.
+
 ## 1. Decide the issue type first
 
 Use one of these three types:

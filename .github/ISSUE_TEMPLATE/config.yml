@@ -2,4 +2,4 @@
 contact_links:
   - name: Repository Instructions
     url: https://github.com/cracketus/senior-pomidor/blob/main/INSTRUCTIONS.md
-    about: Read branch/commit/PR conventions before creating implementation issues.
+    about: Read branch/commit/PR conventions and choose the matching form/template (TOMATO, enhancement, bug, feature).

@@ -1,5 +1,10 @@
 # 🍅 Tomato Brain (Embodied AI)
 
+![CI](https://github.com/cracketus/senior-pomidor/actions/workflows/tests.yml/badge.svg)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+![Issues](https://img.shields.io/github/issues/cracketus/senior-pomidor)
+![Pull Requests](https://img.shields.io/github/issues-pr/cracketus/senior-pomidor)
+
 An open, production-minded AI core for growing tomatoes in the real world.
 
 This project is about building an **embodied AI system** that can:
@@ -11,6 +16,16 @@ This project is about building an **embodied AI system** that can:
 * Run safely on a mini-PC next to a real plant
 
 No hype. No magic. Just clean engineering.
+
+---
+
+# Project Status & Community
+
+- Contributing: `CONTRIBUTING.md`
+- Code of Conduct: `CODE_OF_CONDUCT.md`
+- Security Policy: `SECURITY.md`
+- Issue Templates: `.github/ISSUE_TEMPLATE/`
+- Pull Request Template: `.github/PULL_REQUEST_TEMPLATE.md`
 
 ---
 
@@ -229,7 +244,9 @@ The goal is to build an open embodied AI system that the community can inspect a
 - `docs/state_v1_weather_adapter_mapping.md`
 - `docs/codex_prompting_playbook.md`
 - `docs/how_to_create_issue.md` (issue naming, labels, and body structure)
-- GitHub Issue Forms in `.github/ISSUE_TEMPLATE/` (`TOMATO Work Item`, `Enhancement Request`)
+- GitHub Issue Templates in `.github/ISSUE_TEMPLATE/`:
+  - Forms: `TOMATO Work Item`, `Enhancement Request`
+  - Markdown templates: `Bug report`, `Feature request`
 
 ---
 
@@ -363,3 +380,4 @@ Scope note:
 * `hardware_stub` is a no-op command routing stub, not a real actuator driver.
 * `production_scaffold` is a production-intended scaffold with explicit TODO boundaries for real actuator transport.
 * `flaky_stub` is a deterministic test driver for retry/backoff runtime validation.
+
